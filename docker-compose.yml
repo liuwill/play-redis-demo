@@ -1,0 +1,19 @@
+version: '2'
+services:
+  some-redis:
+    image: redis:4-alpine
+    ports:
+      - "6379:6379"
+
+  play-redis-demo:
+    image: node:alpine
+    # name: play-redis-demo
+    volumes:
+      - ./:/usr/app/play-redis-demo
+    command: sh /usr/app/play-redis-demo/scripts/runner.sh
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    links:
+      - some-redis
