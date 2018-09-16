@@ -1,5 +1,16 @@
 import settingUtils from './setting'
 import redisModule from './module/redis'
-const setting = settingUtils.loadSetting()
+import rootRouter from './router'
 
-redisModule.getConnection(setting.redis)
+export default {
+  initModules: (app) => {
+    const setting = settingUtils.loadSetting()
+
+    app.context.redis = redisModule.getConnection(setting.redis)
+  },
+  installRouters: (app) => {
+    app
+      .use(rootRouter.routes())
+      .use(rootRouter.allowedMethods())
+  }
+}

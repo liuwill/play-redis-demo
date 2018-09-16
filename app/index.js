@@ -1,4 +1,4 @@
-require('./init')
+import initializer from './init'
 
 const Koa = require('koa')
 const app = new Koa()
@@ -21,10 +21,16 @@ app.use(async (ctx, next) => {
 })
 
 // response
-
-app.use(async ctx => {
-  ctx.body = 'Hello World'
+app.use(async (ctx, next) => {
+  try {
+    await next()
+  } catch (err) {
+    console.log(`UnHandler Exception - ${err.message}`)
+  }
 })
+
+initializer.initModules(app)
+initializer.installRouters(app)
 
 const PORT = process.env.NODE_PORT || 3000
 app.listen(PORT)
