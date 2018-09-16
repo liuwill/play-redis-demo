@@ -3,13 +3,13 @@ import Router from 'koa-router'
 var router = new Router()
 
 const apiMap = {
-  vote: {
-    route: 'vote',
-    module: 'vote',
+  votor: {
+    route: 'votor',
+    module: 'votor',
   },
-  manager: {
-    route: 'manager',
-    module: 'manager',
+  elector: {
+    route: 'elector',
+    module: 'elector',
   }
 }
 
