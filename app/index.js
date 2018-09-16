@@ -3,8 +3,10 @@ import initializer from './init'
 const Koa = require('koa')
 const app = new Koa()
 
-// logger
+const bodyParser = require('koa-bodyparser')
+app.use(bodyParser())
 
+// logger
 app.use(async (ctx, next) => {
   await next()
   const rt = ctx.response.get('X-Response-Time')
@@ -12,7 +14,6 @@ app.use(async (ctx, next) => {
 })
 
 // x-response-time
-
 app.use(async (ctx, next) => {
   const start = Date.now()
   await next()
@@ -20,12 +21,12 @@ app.use(async (ctx, next) => {
   ctx.set('X-Response-Time', `${ms}ms`)
 })
 
-// response
+// handle error
 app.use(async (ctx, next) => {
   try {
     await next()
   } catch (err) {
-    console.log(`UnHandler Exception - ${err.message}`)
+    console.error(`UnHandler Exception - ${err.message}`)
   }
 })
 

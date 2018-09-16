@@ -2,13 +2,11 @@ import Router from 'koa-router'
 
 var router = new Router()
 
-const setupTime = new Date()
-router.get('/health', (ctx, next) => {
+router.get('/meta', (ctx, next) => {
   ctx.body = {
     status: true,
     code: 200,
-    time: setupTime.toISOString(),
-    version: 'current',
+    message: '创建并管理游戏',
   }
 })
 

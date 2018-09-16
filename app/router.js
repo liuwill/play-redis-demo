@@ -23,6 +23,15 @@ router.get('/health', (ctx, next) => {
   }
 })
 
+router.put('/json', (ctx, next) => {
+  console.log(ctx.request.body)
+  ctx.body = {
+    status: true,
+    code: 200,
+    message: ctx.request.body,
+  }
+})
+
 for (let route in apiMap) {
   const apiRouter = require(`./api/${apiMap[route].module}`)
   const routePath = apiMap[route].route
