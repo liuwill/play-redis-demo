@@ -3,9 +3,9 @@ import Router from 'koa-router'
 var router = new Router()
 
 const apiMap = {
-  votor: {
-    route: 'votor',
-    module: 'votor',
+  voter: {
+    route: 'voter',
+    module: 'voter',
   },
   elector: {
     route: 'elector',
@@ -14,7 +14,7 @@ const apiMap = {
 }
 
 const setupTime = new Date()
-router.get('/health', (ctx, next) => {
+router.get('/health', async (ctx, next) => {
   ctx.body = {
     status: true,
     code: 200,
@@ -23,7 +23,7 @@ router.get('/health', (ctx, next) => {
   }
 })
 
-router.put('/json', (ctx, next) => {
+router.put('/json', async (ctx, next) => {
   console.log(ctx.request.body)
   ctx.body = {
     status: true,

@@ -2,7 +2,7 @@ import Router from 'koa-router'
 
 var router = new Router()
 
-router.get('/meta', (ctx, next) => {
+router.get('/meta', async (ctx, next) => {
   ctx.body = {
     status: true,
     code: 200,

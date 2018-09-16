@@ -1,6 +1,6 @@
 {
   "redis": {
-    "host": "some-redis",
+    "host": "localhost",
     "port": "6379"
   }
 }
