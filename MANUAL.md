@@ -72,3 +72,15 @@ curl -X GET http://localhost:3000/api/elector/ranking
 ```shell
 curl -X GET http://localhost:3000/api/elector/position/16600000002
 ```
+
+## 9 查看投某个竞选人的投票人排行榜
+
+```shell
+curl -X GET http://localhost:3000/api/elector/voter/ranking?elector_id=16600000002
+```
+
+## 10 单个投票人为某个竞选人的投票排名
+
+```shell
+curl -X GET http://localhost:3000/api/voter/position/elector/16600000002?mobile=18800000001&password=111111
+```

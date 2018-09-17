@@ -151,4 +151,27 @@ router.get('/position/:mobile', async (ctx) => {
   }
 })
 
+router.get('/voter/ranking', async (ctx) => {
+  const redisHandler = ctx.redis
+  let { elector_id } = ctx.request.query
+
+  const electorVoteKey = electionUtils.generateElectorVoteKey(elector_id)
+
+  let rawRankData = await redisHandler.zrevrange(electorVoteKey, 0, -1, 'WITHSCORES')
+  let rankList = []
+  for (let i = 0; i < rawRankData.length; i += 2) {
+    const mobile = rawRankData[i]
+    rankList.push({
+      mobile,
+      point: rawRankData[i+1],
+    })
+  }
+
+  ctx.body = {
+    status: true,
+    code: 0,
+    data: rankList,
+  }
+})
+
 module.exports = router

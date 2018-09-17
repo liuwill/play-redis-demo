@@ -160,4 +160,23 @@ router.post('/do_vote', apiMiddleware.authVoter, async (ctx) => {
   }
 })
 
+router.get('/position/elector/:mobile', apiMiddleware.authVoter, async (ctx) => {
+  const redisHandler = ctx.redis
+  let { mobile } = ctx.params
+  let voterData = ctx.state.user
+
+  const electorVoteKey = electionUtils.generateElectorVoteKey(mobile)
+
+  let myRank = await redisHandler.zrevrank(electorVoteKey, voterData.mobile)
+  if (!isNaN(`${myRank}`)) {
+    myRank = Number(myRank) + 1
+  }
+
+  ctx.body = {
+    status: true,
+    code: 0,
+    data: myRank || 0,
+  }
+})
+
 module.exports = router
