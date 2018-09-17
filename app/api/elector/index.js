@@ -103,4 +103,52 @@ router.post('/create', async (ctx) => {
   }
 })
 
+router.get('/ranking', async (ctx) => {
+  const redisHandler = ctx.redis
+
+  const hashKey = storeConstant.ELECTOR_USER_HASH_KEY
+  const totalVoteKey = storeConstant.TOTAL_ELECTION_HASH_KEY
+
+  const pipelineAction = [
+    ['hgetall', hashKey],
+    ['zrevrange', totalVoteKey, 0, -1, 'WITHSCORES'],
+  ]
+  const pipelineResult = await redisHandler.pipeline(pipelineAction).exec()
+  let electorMap = pipelineResult[0][1]
+  let rawRankData = pipelineResult[1][1]
+  let rankList = []
+  for (let i = 0; i < rawRankData.length; i += 2) {
+    const mobile = rawRankData[i]
+    const data = JSON.parse(electorMap[mobile])
+    rankList.push(Object.assign({
+      mobile,
+      point: rawRankData[i+1],
+    }, electionUtils.buildElectorData(data)))
+  }
+
+  ctx.body = {
+    status: true,
+    code: 0,
+    data: rankList,
+  }
+})
+
+router.get('/position/:mobile', async (ctx) => {
+  const redisHandler = ctx.redis
+  let { mobile } = ctx.params
+
+  const totalVoteKey = storeConstant.TOTAL_ELECTION_HASH_KEY
+
+  let myRank = await redisHandler.zrevrank(totalVoteKey, mobile)
+  if (!isNaN(`${myRank}`)) {
+    myRank = Number(myRank) + 1
+  }
+
+  ctx.body = {
+    status: true,
+    code: 0,
+    data: myRank || 0,
+  }
+})
+
 module.exports = router

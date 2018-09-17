@@ -60,3 +60,15 @@ curl -X POST \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -d 'mobile=18800000001&password=111111&elector_id=16600000001&point=12'
 ```
+
+## 7 查看总的投票排名
+
+```shell
+curl -X GET http://localhost:3000/api/elector/ranking
+```
+
+## 8 查看单个竞选人的名次
+
+```shell
+curl -X GET http://localhost:3000/api/elector/position/16600000002
+```

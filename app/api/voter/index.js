@@ -149,7 +149,8 @@ router.post('/do_vote', apiMiddleware.authVoter, async (ctx) => {
     ['del', lockKey],
   ]
 
-  const actionResult = await redisHandler.pipeline(pipelineActions).exec()
+  const actionResult = await redisHandler.pipeline(doActions).exec()
+  console.log('vote:', actionResult)
   ctx.body = {
     status: true,
     code: 0,
