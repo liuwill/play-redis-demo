@@ -9,6 +9,8 @@
 ## start
 
 ```shell
+nvm use
+
 # 安装依赖
 yarn install
 

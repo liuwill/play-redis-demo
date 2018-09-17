@@ -30,6 +30,10 @@ app.use(async (ctx, next) => {
   }
 })
 
+app.on('error', err => {
+  console.error('server error', err)
+})
+
 initializer.initModules(app)
 initializer.installRouters(app)
 
