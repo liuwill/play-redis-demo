@@ -91,15 +91,19 @@ router.post('/collect', apiMiddleware.authVoter, async (ctx) => {
   const redisHandler = ctx.redis
   let voterData = ctx.state.user
 
-  const pointer = chance.integer({ min: 1, max: 100 })
+  const point = chance.integer({ min: 1, max: 100 })
   const cachedKey = electionUtils.generateVoterPointsKey(voterData.mobile)
 
-  await redisHandler.incrby(cachedKey, pointer)
+  const parallelResult = await Promise.all([
+    redisHandler.incrby(cachedKey, point),
+    redisHandler.get(cachedKey),
+  ])
   ctx.body = {
     status: true,
     code: 0,
     data: Object.assign(voterData, {
-      pointer,
+      collect_point: point,
+      point: parallelResult[1],
     }),
   }
 })

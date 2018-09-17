@@ -21,7 +21,10 @@ router.get('/list', async (ctx) => {
 
   const hashKey = storeConstant.ELECTOR_USER_HASH_KEY
   let rawElectorMap = await redisHandler.hgetall(hashKey)
-  let electorList = Object.values(rawElectorMap)
+  let electorList = Object.values(rawElectorMap).map(item => {
+    let data = JSON.parse(item)
+    return electionUtils.buildElectorData(data)
+  })
 
   ctx.body = {
     status: true,

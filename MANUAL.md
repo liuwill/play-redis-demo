@@ -42,3 +42,21 @@ curl -X POST \
 ```shell
 curl -X GET http://localhost:3000/api/elector/list
 ```
+
+## 5 投票人收集投票额度
+
+```shell
+curl -X POST \
+  http://localhost:3000/api/voter/collect \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -d 'mobile=18800000001&password=111111'
+```
+
+## 6 投票人进行投票动作
+
+```shell
+curl -X POST \
+  http://localhost:3000/api/voter/do_vote \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -d 'mobile=18800000001&password=111111&elector_id=16600000001&point=12'
+```
