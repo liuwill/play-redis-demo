@@ -2,8 +2,8 @@ import initializer from './init'
 
 const Koa = require('koa')
 const path = require('path')
-const  views = require('koa-views')
-const  serve = require('koa-static')
+const views = require('koa-views')
+const serve = require('koa-static')
 
 const app = new Koa()
 

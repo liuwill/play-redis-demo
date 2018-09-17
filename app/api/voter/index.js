@@ -1,5 +1,6 @@
 import Router from 'koa-router'
 import chance from 'chance'
+import validator from 'validator'
 
 import storeConstant from '../../constant/store'
 import electionUtils from '../../utils/election'
@@ -15,23 +16,27 @@ router.get('/meta', async (ctx, next) => {
 })
 
 // 获取单个投票人
-router.get('/single/:mobile', async (ctx) => {
+router.get('/info/:mobile', async (ctx) => {
   const redisHandler = ctx.redis
 
   let { mobile } = ctx.request.query
   const hashKey = storeConstant.VOTE_USER_HASH_KEY
 
   let existVoter = await redisHandler.hget(hashKey, mobile)
-  if (!existVoter) {
+  if (!existVoter || !validator.isJSON(existVoter)) {
     ctx.throw(404, '用户不存在')
   }
 
   let voterData = JSON.parse(existVoter)
+  let cachedKey = electionUtils.generateVoterPointsKey(mobile)
+
+  let point = await redisHandler.get(cachedKey)
+  voterData.point = point
 
   ctx.body = {
     status: true,
     code: 0,
-    data: voterData,
+    data: electionUtils.buildVoteData(voterData),
   }
 })
 
@@ -44,6 +49,7 @@ router.post('create', async (ctx) => {
   let address = chance.address()
   let name = chance.name()
   let email = chance.email({ domain: "liuwill.com" })
+  let created = new Date()
 
   if (!password || password.length > 16 || password.length < 3) {
     ctx.throw(400, 'password error')
@@ -63,6 +69,7 @@ router.post('create', async (ctx) => {
     email,
     address,
     name,
+    created,
   }
 
   await redisHandler.hset(hashKey, mobile, JSON.parse(createdVoter))
@@ -93,7 +100,7 @@ router.post('/collect', async (ctx) => {
   const pointer = chance.integer({ min: 1, max: 100 })
   const cachedKey = electionUtils.generateVoterPointsKey(mobile)
 
-  redisHandler.incrby(cachedKey, pointer)
+  await redisHandler.incrby(cachedKey, pointer)
   ctx.body = {
     status: true,
     code: 0,
@@ -101,6 +108,11 @@ router.post('/collect', async (ctx) => {
       pointer,
     }),
   }
+})
+
+// 投票人为竞选人投票
+router.post('do_vote', async (ctx) => {
+
 })
 
 module.exports = router
