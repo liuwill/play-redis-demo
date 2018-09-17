@@ -32,6 +32,14 @@ router.put('/json', async (ctx, next) => {
   }
 })
 
+router.get('/voter.html', async (ctx, next) => {
+  await ctx.render('voter')
+})
+
+router.get('/elector.html', async (ctx, next) => {
+  await ctx.render('elector')
+})
+
 for (let route in apiMap) {
   const apiRouter = require(`./api/${apiMap[route].module}`)
   const routePath = apiMap[route].route

@@ -1,10 +1,23 @@
 import initializer from './init'
 
 const Koa = require('koa')
+const path = require('path')
+const  views = require('koa-views')
+const  serve = require('koa-static')
+
 const app = new Koa()
 
 const bodyParser = require('koa-bodyparser')
 app.use(bodyParser())
+
+// Must be used before any router is used
+app.use(views(__dirname + '/views', {
+  map: {
+    html: 'nunjucks'
+  }
+}))
+
+app.use(serve(path.join(__dirname, '../public')))
 
 // logger
 app.use(async (ctx, next) => {
