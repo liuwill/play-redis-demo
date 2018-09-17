@@ -1,11 +1,12 @@
 import Router from 'koa-router'
-import chance from 'chance'
 import validator from 'validator'
 
 import storeConstant from '../../constant/store'
 import electionUtils from '../../utils/election'
 
-var router = new Router()
+const chance = require('chance').Chance()
+
+const router = new Router()
 
 router.get('/meta', async (ctx, next) => {
   ctx.body = {
@@ -19,11 +20,8 @@ router.get('/list', async (ctx) => {
   const redisHandler = ctx.redis
 
   const hashKey = storeConstant.ELECTOR_USER_HASH_KEY
-  let rawElectorList = await redisHandler.hget(hashKey)
-  const electorList = rawElectorList.map(item => {
-    const data = JSON.parse(item)
-    return electionUtils.buildElectorData(data)
-  })
+  let rawElectorMap = await redisHandler.hgetall(hashKey)
+  let electorList = Object.values(rawElectorMap)
 
   ctx.body = {
     status: true,
@@ -35,7 +33,7 @@ router.get('/list', async (ctx) => {
 router.get('/info/:mobile', async (ctx) => {
   const redisHandler = ctx.redis
 
-  let { mobile } = ctx.request.query
+  let { mobile } = ctx.params
   const hashKey = storeConstant.ELECTOR_USER_HASH_KEY
 
   let existElector = await redisHandler.hget(hashKey, mobile)
@@ -51,7 +49,7 @@ router.get('/info/:mobile', async (ctx) => {
   }
 })
 
-router.post('create', async (ctx) => {
+router.post('/create', async (ctx) => {
   const fields = ['mobile', 'password']
   const hashKey = storeConstant.ELECTOR_USER_HASH_KEY
   let { mobile, password } = ctx.request.body
@@ -65,6 +63,7 @@ router.post('create', async (ctx) => {
   let company = chance.company()
   let email = chance.email({ domain: "google.com" })
   let created = new Date()
+  let id = chance.guid()
 
   if (!password || password.length > 16 || password.length < 3) {
     ctx.throw(400, 'password error')
@@ -79,6 +78,7 @@ router.post('create', async (ctx) => {
   }
 
   let createdElector = {
+    id,
     mobile,
     password,
     email,
@@ -92,7 +92,7 @@ router.post('create', async (ctx) => {
     created,
   }
 
-  await redisHandler.hset(hashKey, mobile, JSON.parse(createdElector))
+  await redisHandler.hset(hashKey, mobile, JSON.stringify(createdElector))
   ctx.body = {
     status: true,
     code: 0,

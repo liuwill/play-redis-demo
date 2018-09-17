@@ -12,6 +12,7 @@ export default {
 
       redis.on('error', err => {
         console.error(`connect to redis(${redisConfig.host}) failure, reason: ${err.toString()}`)
+        redis = null
       })
     }
     return redis
