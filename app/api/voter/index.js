@@ -124,7 +124,7 @@ router.post('/do_vote', apiMiddleware.authVoter, async (ctx) => {
   try {
     electionUtils.checkVoteLock(pipelineResult, point)
   } catch (err) {
-    ctx.throw(err.code, err.message)
+    ctx.throw(400, err.message)
   }
   /*
   if (pipelineResult[0][1]) {

@@ -114,7 +114,7 @@ router.get('/ranking', async (ctx) => {
     const data = JSON.parse(electorMap[mobile])
     rankList.push(Object.assign({
       mobile,
-      point: rawRankData[i+1],
+      point: rawRankData[i + 1],
     }, electionUtils.buildElectorData(data)))
   }
 
@@ -152,7 +152,7 @@ router.get('/voter/ranking', async (ctx) => {
     const mobile = rawRankData[i]
     rankList.push({
       mobile,
-      point: rawRankData[i+1],
+      point: rawRankData[i + 1],
     })
   }
 

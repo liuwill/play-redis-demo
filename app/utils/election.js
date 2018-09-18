@@ -32,17 +32,11 @@ export default {
   },
   checkVoteLock: (pipelineResult, point) => {
     if (!pipelineResult || !pipelineResult[0] || pipelineResult[0][1]) {
-      throw {
-        code: 500,
-        message: '没有获得锁',
-      }
+      throw Error("没有获得锁")
     }
 
     if (!pipelineResult[1][1] || Number(pipelineResult[1][1]) < Number(point)) {
-      throw {
-        code: 400,
-        message: '没有足够的票数',
-      }
+      throw Error("没有足够的票数")
     }
   },
   parseRank: (myRank) => {
