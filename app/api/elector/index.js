@@ -8,14 +8,6 @@ const chance = require('chance').Chance()
 
 const router = new Router()
 
-router.get('/meta', async (ctx, next) => {
-  ctx.body = {
-    status: true,
-    code: 200,
-    message: '创建并管理游戏',
-  }
-})
-
 router.get('/list', async (ctx) => {
   const redisHandler = ctx.redis
 

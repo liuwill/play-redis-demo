@@ -11,14 +11,6 @@ const chance = require('chance').Chance()
 
 const router = new Router()
 
-router.get('/meta', async (ctx, next) => {
-  ctx.body = {
-    status: true,
-    code: 200,
-    message: '参与投票',
-  }
-})
-
 // 获取单个投票人
 router.get('/info/:mobile', async (ctx) => {
   const redisHandler = ctx.redis
@@ -133,9 +125,7 @@ router.post('/do_vote', apiMiddleware.authVoter, async (ctx) => {
     ctx.throw(500, '没有获得锁')
   }
 
-  if (!pipelineResult[1][1]) {
-    ctx.throw(400, '没有足够的票数')
-  } else if (Number(pipelineResult[1][1]) < Number(point)) {
+  if (!pipelineResult[1][1] || Number(pipelineResult[1][1]) < Number(point)) {
     ctx.throw(400, '没有足够的票数')
   }
 

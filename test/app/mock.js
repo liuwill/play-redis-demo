@@ -18,8 +18,15 @@ const voters = {
   '18800000001': { mobile: '18800000001', password: '1111111' },
 }
 
+const electors = {
+  '16600000001': { mobile: '16600000001', password: '1111111' },
+}
+
 export default {
-  request,
+  createRequest: () => {
+    return request
+  },
   server,
   voters,
+  electors,
 }

@@ -31,7 +31,7 @@
   },
   "scripts": {
     "start": "node index",
-    "check": "yarn lint",
+    "check": "yarn lint && yarn run test",
     "lint": "eslint ./",
     "test": "NODE_ENV=unit mocha --opts test/mocha.opts",
     "coverage": "export NODE_ENV=unit && nyc mocha --opts test/mocha.opts",

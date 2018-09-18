@@ -12,6 +12,7 @@ function pickField(data, fields) {
 }
 
 export default {
+  pickField,
   generateVoterPointsKey: (mobile) => {
     return `voter:score:${mobile}`
   },
