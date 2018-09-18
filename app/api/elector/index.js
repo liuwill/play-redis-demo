@@ -132,14 +132,11 @@ router.get('/position/:mobile', async (ctx) => {
   const totalVoteKey = storeConstant.TOTAL_ELECTION_HASH_KEY
 
   let myRank = await redisHandler.zrevrank(totalVoteKey, mobile)
-  if (!isNaN(`${myRank}`)) {
-    myRank = Number(myRank) + 1
-  }
 
   ctx.body = {
     status: true,
     code: 0,
-    data: myRank || 0,
+    data: electionUtils.parseRank(myRank),
   }
 })
 

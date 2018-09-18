@@ -1,20 +1,27 @@
 let Redis = require('ioredis')
 let redis = null
+let currentConfig = null
+
+const handleConnect = () => {
+  console.log(`connect to redis(${currentConfig.host}) success`)
+}
+
+const handleError = (err) => {
+  console.log(`connect to redis(${currentConfig.host}) success`)
+}
 
 export default {
   getConnection: (redisConfig, reload = false) => {
     if (!redis || reload) {
+      currentConfig = redisConfig
       redis = new Redis(redisConfig)
 
-      redis.on('connect', () => {
-        console.log(`connect to redis(${redisConfig.host}) success`)
-      })
+      redis.on('connect', handleConnect)
 
-      redis.on('error', err => {
-        console.error(`connect to redis(${redisConfig.host}) failure, reason: ${err.toString()}`)
-        redis = null
-      })
+      redis.on('error', handleError)
     }
     return redis
-  }
+  },
+  handleConnect,
+  handleError,
 }

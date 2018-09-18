@@ -13,14 +13,21 @@ const loadJsonConfig = (configPath) => {
   }
 }
 
+const fetchConfigPath = (nodeEnv) => {
+  let settingPath = '../config/setting.json'
+  if (nodeEnv === 'unit') {
+    settingPath = '../config/setting.unit.json'
+  }
+  return settingPath
+}
+
 let settingConfig = null
+
 export default {
+  fetchConfigPath,
   loadJsonConfig,
   loadSetting: () => {
-    let settingPath = '../config/setting.json'
-    if (process.env.NODE_ENV === 'unit') {
-      settingPath = '../config/setting.unit.json'
-    }
+    let settingPath = fetchConfigPath(process.env.NODE_ENV)
 
     if (!settingConfig) {
       settingConfig = loadJsonConfig(path.join(__dirname, settingPath))

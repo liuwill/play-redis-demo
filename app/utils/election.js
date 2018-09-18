@@ -30,4 +30,26 @@ export default {
     const fields = ['id', 'mobile', 'email', 'address', 'name', 'created', 'point']
     return pickField(data, fields)
   },
+  checkVoteLock: (pipelineResult, point) => {
+    if (!pipelineResult || !pipelineResult[0] || pipelineResult[0][1]) {
+      throw {
+        code: 500,
+        message: '没有获得锁',
+      }
+    }
+
+    if (!pipelineResult[1][1] || Number(pipelineResult[1][1]) < Number(point)) {
+      throw {
+        code: 400,
+        message: '没有足够的票数',
+      }
+    }
+  },
+  parseRank: (myRank) => {
+    if (!isNaN(`${myRank}`)) {
+      myRank = Number(myRank) + 1
+    }
+
+    return myRank || 0
+  }
 }

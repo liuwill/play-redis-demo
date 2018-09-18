@@ -178,9 +178,31 @@ describe('Election And Vote', function () {
           done()
         });
     });
+
+    it('double create elector', function (done) {
+      request
+        .post('/api/elector/create')
+        .send(mockServer.electors['16600000001'])
+        .expect(400)
+        .end(function (err, res) {
+          if (err) return done(err)
+          done()
+        });
+    });
   })
 
   describe('test voter throws', function () {
+    it('double create voter', function (done) {
+      request
+        .post('/api/voter/create')
+        .send(mockServer.voters['18800000001'])
+        .expect(400)
+        .end(function (err, res) {
+          if (err) return done(err)
+          done()
+        });
+    });
+
     it('create voter missing password', function (done) {
       request
         .post('/api/voter/create')

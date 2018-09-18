@@ -121,6 +121,12 @@ router.post('/do_vote', apiMiddleware.authVoter, async (ctx) => {
     ['setex', lockKey, 3, 1],
   ]
   const pipelineResult = await redisHandler.pipeline(pipelineActions).exec()
+  try {
+    electionUtils.checkVoteLock(pipelineResult, point)
+  } catch (err) {
+    ctx.throw(err.code, err.message)
+  }
+  /*
   if (pipelineResult[0][1]) {
     ctx.throw(500, '没有获得锁')
   }
@@ -128,6 +134,7 @@ router.post('/do_vote', apiMiddleware.authVoter, async (ctx) => {
   if (!pipelineResult[1][1] || Number(pipelineResult[1][1]) < Number(point)) {
     ctx.throw(400, '没有足够的票数')
   }
+  */
 
   const totalVoteKey = storeConstant.TOTAL_ELECTION_HASH_KEY
   const electorVoteKey = electionUtils.generateElectorVoteKey(elector_id)
@@ -158,14 +165,11 @@ router.get('/position/elector/:mobile', apiMiddleware.authVoter, async (ctx) => 
   const electorVoteKey = electionUtils.generateElectorVoteKey(mobile)
 
   let myRank = await redisHandler.zrevrank(electorVoteKey, voterData.mobile)
-  if (!isNaN(`${myRank}`)) {
-    myRank = Number(myRank) + 1
-  }
 
   ctx.body = {
     status: true,
     code: 0,
-    data: myRank || 0,
+    data: electionUtils.parseRank(myRank),
   }
 })
 
