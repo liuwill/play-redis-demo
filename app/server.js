@@ -45,7 +45,7 @@ app.use(async (ctx, next) => {
 
 app.on('error', err => {
   console.error(`UnHandler Exception - ${err.message}`)
-  console.error('server error', err)
+  // console.error('server error', err)
 })
 
 initializer.initModules(app)

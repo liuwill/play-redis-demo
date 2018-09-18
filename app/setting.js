@@ -17,8 +17,13 @@ let settingConfig = null
 export default {
   loadJsonConfig,
   loadSetting: () => {
+    let settingPath = '../config/setting.json'
+    if (process.env.NODE_ENV === 'unit') {
+      settingPath = '../config/setting.unit.json'
+    }
+
     if (!settingConfig) {
-      settingConfig = loadJsonConfig(path.join(__dirname, '../config/setting.json'))
+      settingConfig = loadJsonConfig(path.join(__dirname, settingPath))
     }
     return settingConfig
   }

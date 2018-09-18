@@ -33,8 +33,8 @@
     "start": "node index",
     "check": "yarn lint",
     "lint": "eslint ./",
-    "test": "NODE_ENV=unittest mocha --opts test/mocha.opts",
-    "coverage": "export NODE_ENV=unittest && nyc mocha --opts test/mocha.opts",
+    "test": "NODE_ENV=unit mocha --opts test/mocha.opts",
+    "coverage": "export NODE_ENV=unit && nyc mocha --opts test/mocha.opts",
     "report": "nyc --reporter=html --reporter=text mocha --opts test/mocha.opts",
     "report-coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov"
   }

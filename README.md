@@ -1,4 +1,7 @@
 # Play Redis Demo
+[![Build Status](https://travis-ci.org/liuwill/play-redis-demo.svg?branch=master)](https://travis-ci.org/liuwill/play-redis-demo)
+[![codecov](https://codecov.io/gh/liuwill/play-redis-demo/branch/master/graph/badge.svg)](https://codecov.io/gh/liuwill/play-redis-demo)
+
 
 ## requirements
 

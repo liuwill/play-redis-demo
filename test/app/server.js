@@ -1,9 +1,6 @@
-import appServer from '../../app/server'
-import supertest from 'supertest'
+import mockServer from './mock'
 
-const app = appServer.createApp()
-const server = app.listen()
-const request = supertest(server)
+const request = mockServer.request
 
 describe('PUT /json', function () {
   it('respond with json', function (done) {
@@ -14,14 +11,7 @@ describe('PUT /json', function () {
       .expect(200)
       .end(function (err, res) {
         if (err) return done(err)
-        console.log('===========')
         done()
       });
   });
-
-  after(function (done) {
-    console.log('finish')
-    server.close()
-    done()
-  })
 });
