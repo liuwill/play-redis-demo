@@ -37,7 +37,7 @@ describe('load json config', function () {
 
 describe('cover redis error', function () {
   it('should load empty if not json file', function () {
-    const result = redisModule.handleError(null)
+    const result = redisModule.handleError(new Error())
 
     expect(result).to.be.an('undefined')
   })

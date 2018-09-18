@@ -7,7 +7,7 @@ const handleConnect = () => {
 }
 
 const handleError = (err) => {
-  console.log(`connect to redis(${currentConfig.host}) success`)
+  console.error(`connect to redis(${currentConfig.host}) failure, reason: ${err.toString()}`)
 }
 
 export default {
