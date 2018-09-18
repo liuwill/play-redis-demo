@@ -2,3 +2,4 @@ node_modules
 .setting.vim
 ARTICLE.md
 wiki
+.nyc_output

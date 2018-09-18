@@ -23,11 +23,19 @@
     "@babel/preset-env": "^7.0.0",
     "@babel/register": "^7.0.0",
     "babel-eslint": "^9.0.0",
-    "eslint": "^5.6.0"
+    "chai": "^4.1.2",
+    "eslint": "^5.6.0",
+    "mocha": "^5.2.0",
+    "nyc": "^13.0.1",
+    "supertest": "^3.3.0"
   },
   "scripts": {
     "start": "node index",
     "check": "yarn lint",
-    "lint": "eslint ./"
+    "lint": "eslint ./",
+    "test": "NODE_ENV=unittest mocha --opts test/mocha.opts",
+    "coverage": "export NODE_ENV=unittest && nyc mocha --opts test/mocha.opts",
+    "report": "nyc --reporter=html --reporter=text mocha --opts test/mocha.opts",
+    "report-coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov"
   }
 }
