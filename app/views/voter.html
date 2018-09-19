@@ -36,6 +36,13 @@
       <div class="menu-bar-item active">Voter</div>
       <div class="menu-bar-item">Elector</div>
     </div>
+
+    <div class="pop-layer" v-if="visible">
+      <div class="pop-mask" v-on:click="handleClose"></div>
+      <div class="pop-window">
+        <tab-panel></tab-panel>
+      </div>
+    </div>
   </div>
 </body>
 
@@ -56,8 +63,9 @@
       this.voter = {}
       this.state = {
         message: 'my name',
+        visible: false,
         currentUser: {},
-        electorList: []
+        electorList: [],
       }
 
       Vue.component('grid-item', {
@@ -65,14 +73,44 @@
         template: '<div class="grid-box"><div class="grid-box-content">'
           + '<div class="avatar"><img :src="elector.avatar"/></div>'
           + '<div class="name" :title="elector.name">{{ elector.name }}</div>'
-          + '<div class="company" :title="elector.company">{{ elector.company }}</div>'
+          + '<div class="company" :title="elector.profession">{{ elector.profession }}</div>'
           + '</div></div>'
       })
+
+      Vue.component('tab-panel', {
+        data: function () {
+          return {
+            current: 'elector',
+            tabConfig: [{ "type": "elector" }, { "type": "voter" }],
+          }
+        },
+        methods: {
+          onClickTab: function(clickType) {
+            if (clickType !== this.current) {
+              this.current = clickType
+            }
+          }
+        },
+        template: '<div class="tab-panel">'
+          + ' <div class="tab-panel-header">'
+          + '   <div class="tab-item" v-on:click="onClickTab(item.type)" v-bind:class="{active: current == item.type}" v-for="item in tabConfig">{{ item.type }}</div>'
+          + ' </div>'
+          + ' <div class="tab-panel-body">'
+          + '   <div class="tab-content" v-bind:class="{active: current == item.type}" v-for="item in tabConfig"></div>'
+          + ' </div>'
+          + '</div>'
+      })
+
       this.app = new Vue({
         el: '#app',
         data: this.state,
         methods: {
           handleAddElector: function (event) {
+            this.visible = true
+            console.log('click add')
+          },
+          handleClose: function (event) {
+            this.visible = false
             console.log('click add')
           }
         }
