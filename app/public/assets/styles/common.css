@@ -47,11 +47,13 @@ body {
   justify-content: center;
 
   font-size: 1.5em;
+  cursor: pointer;
 }
 
 .menu-bar-item.active {
   background: #fff;
   color: #7c7c7c;
+  cursor: default;
 }
 
 .container {
@@ -195,4 +197,43 @@ i.add-icon::after {
 }
 .tab-panel-header .tab-item:last-child {
   border-right: none;
+}
+
+.form-container {
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-content: center;
+
+  box-sizing: border-box;
+  padding: 2em;
+}
+.form-container .form-item {
+  text-align: center;
+  box-sizing: border-box;
+  padding: 1em 0 0;
+}
+.form-container .form-item .form-input {
+  text-align: center;
+  width: 80%;
+  height: 3em;
+  border: none;
+  border-bottom: 1px solid #3d99d4;
+  outline:none;
+  transition: all 1s ease;
+}
+.form-container .form-item .form-input:focus {
+  border-bottom: 1px solid #c3c7ca;
+}
+.form-container .form-item .submit-btn {
+  margin-top: 1em;
+  border: none;
+  width: 80%;
+  height: 3em;
+  color: #fff;
+  background: #3d99d4;
+  outline:none;
+}
+.form-container .form-item .submit-btn:hover {
+  background: #579ac7;
 }
