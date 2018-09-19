@@ -1,4 +1,5 @@
 import initializer from './init'
+import serverUtils from './utils/server'
 
 const Koa = require('koa')
 const path = require('path')
@@ -35,18 +36,25 @@ app.use(async (ctx, next) => {
 })
 
 // handle error
-// app.use(async (ctx, next) => {
-//   try {
-//     await next()
-//   } catch (err) {
-//     console.error(`UnHandler Exception - ${err.message}`)
-//   }
-// })
+app.use(async (ctx, next) => {
+  try {
+    await next()
+  } catch (err) {
+    console.error(`UnHandler Exception - ${err.message}`, err)
+    ctx.status = serverUtils.parseErrorCode(err)
 
+    ctx.body = {
+      message: err.message
+    }
+  }
+})
+
+/*
 app.on('error', err => {
   console.error(`UnHandler Exception - ${err.message}`)
   // console.error('server error', err)
 })
+*/
 
 initializer.initModules(app)
 initializer.installRouters(app)
