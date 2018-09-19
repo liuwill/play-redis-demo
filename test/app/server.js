@@ -27,9 +27,9 @@ describe('router', function () {
       });
   });
 
-  it('GET /index.html', function (done) {
+  it('GET /election.html', function (done) {
     request
-      .get('/index.html')
+      .get('/election.html')
       .expect('Content-Type', /html/)
       .expect(200)
       .end(function (err, res) {

@@ -32,12 +32,12 @@ router.put('/json', async (ctx, next) => {
   }
 })
 
-router.get('/index.html', async (ctx, next) => {
-  await ctx.render('index')
+router.get('/election.html', async (ctx, next) => {
+  await ctx.render('election')
 })
 
 router.get('/', async (ctx, next) => {
-  await ctx.render('index')
+  await ctx.render('election')
 })
 
 for (let route in apiMap) {
