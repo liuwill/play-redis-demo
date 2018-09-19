@@ -27,9 +27,9 @@ describe('router', function () {
       });
   });
 
-  it('GET /voter.html', function (done) {
+  it('GET /index.html', function (done) {
     request
-      .get('/voter.html')
+      .get('/index.html')
       .expect('Content-Type', /html/)
       .expect(200)
       .end(function (err, res) {
@@ -38,9 +38,9 @@ describe('router', function () {
       });
   });
 
-  it('GET /elector.html', function (done) {
+  it('GET /', function (done) {
     request
-      .get('/elector.html')
+      .get('/')
       .expect('Content-Type', /html/)
       .expect(200)
       .end(function (err, res) {
