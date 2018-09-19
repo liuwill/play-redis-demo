@@ -51,7 +51,8 @@
       HOST_NAME: ''
     }
     var EVENT_TYPE = {
-      LOAD_ELECTORS: "load_electors"
+      LOAD_ELECTORS: "load_electors",
+      CREATE_USER_SUCCESS: "create_user_success"
     }
 
     var globalEmitter = new Emitter()
@@ -93,8 +94,25 @@
               this.passwordInput = ''
             }
           },
-          submitCreateUser: function() {
-            alert(this.mobileInput + ":" + this.passwordInput)
+          submitCreateUser: function () {
+            if (!this.mobileInput || !this.passwordInput) {
+              alert('请填写完整信息之后再尝试')
+              return
+            }
+
+            axios.post(DEMO_CONFIG.HOST_NAME + '/api/' + this.current + '/create', {
+              mobile: this.mobileInput,
+              password: this.passwordInput
+            })
+              .then(function (response) {
+                console.log(response)
+                root.emitter.trigger(EVENT_TYPE.CREATE_USER_SUCCESS, response.data)
+                root.loadElectors()
+              })
+              .catch(function (error) {
+                console.log(error)
+                alert(error.message)
+              })
           }
         },
         template: '<div class="tab-panel">'
@@ -143,11 +161,11 @@
     }
 
     VoterApp.prototype.update = function (action) {
+      console.log(action)
       switch (action.type) {
-        case "USER_LOGIN":
+        case "CREATE_USER_SUCCESS":
           this.setState({
-            userStatus: 'online',
-            currentUser: action.payload.user,
+            visible: false
           })
           break
         case "LOAD_ELECTORS":
@@ -187,6 +205,12 @@
           payload: {
             list: response.data.list
           }
+        })
+      })
+
+      this.emitter.on(EVENT_TYPE.CREATE_USER_SUCCESS, function (response) {
+        that.gameApp.update({
+          type: "CREATE_USER_SUCCESS",
         })
       })
     }
