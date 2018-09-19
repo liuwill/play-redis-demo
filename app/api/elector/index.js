@@ -21,7 +21,10 @@ router.get('/list', async (ctx) => {
   ctx.body = {
     status: true,
     code: 0,
-    data: electorList,
+    data: {
+      list: electorList,
+      total: electorList.length,
+    },
   }
 })
 

@@ -1,0 +1,129 @@
+html, body {
+  font-family: "Helvetica Neue", "Helvetica", "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", "メイリオ", "Meiryo", "ＭＳ Ｐゴシック", arial, sans-serif;
+  color: #211922;
+  font-size: 12px;
+}
+
+body {
+  margin: 0;
+}
+
+.status-bar {
+  position: fixed;
+  top: 0;
+  height: 4em;
+  line-height: 4em;
+  text-align: center;
+  width: 100%;
+  background: #202125;
+  z-index: 1;
+}
+
+.status-bar-title {
+  color: #fff;
+  font-size: 1.5em;
+}
+
+.menu-bar {
+  height: 6em;
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  background: #292a2e;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.menu-bar-item {
+  color: #ccc;
+  height: 100%;
+  width: 100%;
+  font-weight: bold;
+  text-align: center;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 1.5em;
+}
+
+.menu-bar-item.active {
+  background: #fff;
+  color: #7c7c7c;
+}
+
+.container {
+  width: 100%;
+  margin-top: 4em;
+  position: relative;
+  margin-bottom: 7em;
+}
+
+.data-grid {
+  display: flex;
+  position: relative;
+  flex-wrap: wrap;
+
+  padding: 1em 0.5em;
+}
+
+.grid-box {
+  flex: 0 0 33%;
+  padding: 1em;
+  box-sizing: border-box;
+
+  text-align: center;
+}
+.grid-box.grid-add {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+i.add-icon {
+  display: inline-block;
+  border: 3px solid #211922;
+  width: 5em;
+  height: 5em;
+  line-height: 5em;
+
+  border-radius: 100%;
+}
+i.add-icon::after {
+  font-size: 3em;
+  font-weight: bolder;
+  content: "+";
+}
+
+.grid-box .grid-box-content {
+  width: 100%;
+  text-align: center;
+
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+}
+.grid-box .grid-box-content .avatar {
+  border: 2px solid #fff;
+  width: 5em;
+  height: 5em;
+  margin-bottom: 3px;
+}
+.grid-box .grid-box-content .avatar>img {
+  width: 100%;
+  border-radius: 100%;
+}
+.grid-box .grid-box-content .name {
+  /* width: 80%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap; */
+}
+.grid-box .grid-box-content .company {
+  /* width: 70%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap; */
+  color: #ccc
+}

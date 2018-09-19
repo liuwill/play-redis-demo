@@ -14,7 +14,7 @@ app.use(bodyParser())
 // Must be used before any router is used
 app.use(views(__dirname + '/views', {
   map: {
-    html: 'nunjucks'
+    html: 'ejs'
   }
 }))
 
@@ -40,7 +40,7 @@ app.use(async (ctx, next) => {
   try {
     await next()
   } catch (err) {
-    console.error(`UnHandler Exception - ${err.message}`, err)
+    console.error(`UnHandler Exception - ${err.message}`)
     ctx.status = serverUtils.parseErrorCode(err)
 
     ctx.body = {

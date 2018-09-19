@@ -5,11 +5,152 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Elector - Play Redis Demo</title>
+  <title>Voter - Play Redis Demo</title>
+  <script src="/assets/dist/axios.min.js"></script>
+  <script src="/assets/dist/vue.min.js"></script>
+  <script src="/assets/common.js"></script>
+  <script src="/assets/voter.js"></script>
+  <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/assets/styles/common.css">
+  <style>
+
+  </style>
 </head>
 
 <body>
+  <div class="main" id="app">
+    <div class="status-bar">
+      <div class="status-bar-title">Play Redis - Voter</div>
+    </div>
 
+    <div class="container">
+      <div class="data-grid">
+        <div class="grid-box grid-add" v-on:click="handleAddElector">
+          <i class="add-icon"></i>
+        </div>
+        <grid-item v-for="item in electorList" v-bind:elector="item" v-bind:key="item.id"></grid-item>
+      </div>
+    </div>
+
+    <div class="menu-bar">
+      <div class="menu-bar-item active">Voter</div>
+      <div class="menu-bar-item">Elector</div>
+    </div>
+  </div>
 </body>
+
+<script type="text/javascript">
+  (function () {
+    window.DEMO_CONFIG = {
+      HOST_NAME: ''
+    }
+    var EVENT_TYPE = {
+      LOAD_ELECTORS: "load_electors"
+    }
+
+    var globalEmitter = new Emitter()
+    window.__logger__ = new Logger()
+
+    function VoterApp(root) {
+      this.root = root
+      this.voter = {}
+      this.state = {
+        message: 'my name',
+        currentUser: {},
+        electorList: []
+      }
+
+      Vue.component('grid-item', {
+        props: ['elector'],
+        template: '<div class="grid-box"><div class="grid-box-content">'
+          + '<div class="avatar"><img :src="elector.avatar"/></div>'
+          + '<div class="name" :title="elector.name">{{ elector.name }}</div>'
+          + '<div class="company" :title="elector.company">{{ elector.company }}</div>'
+          + '</div></div>'
+      })
+      this.app = new Vue({
+        el: '#app',
+        data: this.state,
+        methods: {
+          handleAddElector: function (event) {
+            console.log('click add')
+          }
+        }
+      })
+    }
+
+    VoterApp.prototype.setState = function (nextState) {
+      for (var key in nextState) {
+        this.state[key] = nextState[key]
+        this.app[key] = nextState[key]
+      }
+    }
+
+    VoterApp.prototype.update = function (action) {
+      switch (action.type) {
+        case "USER_LOGIN":
+          this.setState({
+            userStatus: 'online',
+            currentUser: action.payload.user,
+          })
+          break
+        case "LOAD_ELECTORS":
+          var isLoad = false
+          var electorList = []
+          if (action.payload && action.payload.list && action.payload.list.length) {
+            isLoad = true
+            electorList = action.payload.list
+          }
+          this.setState({
+            isLoad: isLoad,
+            electorList: electorList
+          })
+      }
+    }
+
+    function AppService(root) { }
+
+    function VoterClient(appServer) {
+      this.appServer = appServer;
+      this.gameApp = new VoterApp(this)
+
+      this.emitter = globalEmitter
+      this.initEvent()
+
+      var that = this;
+      setTimeout(function () {
+        that.loadElectors()
+      }, 1000)
+    }
+
+    VoterClient.prototype.initEvent = function () {
+      var that = this
+      this.emitter.on(EVENT_TYPE.LOAD_ELECTORS, function (response) {
+        that.gameApp.update({
+          type: "LOAD_ELECTORS",
+          payload: {
+            list: response.data.list
+          }
+        })
+      })
+    }
+
+    VoterClient.prototype.loadElectors = function () {
+      var emitter = this.emitter
+
+      axios.get(DEMO_CONFIG.HOST_NAME + '/api/elector/list')
+        .then(function (response) {
+          console.log(response)
+          emitter.trigger(EVENT_TYPE.LOAD_ELECTORS, response.data)
+        })
+        .catch(function (error) {
+          console.log(error)
+          alert(error.message)
+        })
+    }
+
+    window.__client__ = new VoterClient(new AppService())
+  })()
+</script>
 
 </html>
