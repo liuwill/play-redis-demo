@@ -30,6 +30,13 @@ export default {
     const fields = ['id', 'mobile', 'email', 'address', 'name', 'created', 'point']
     return pickField(data, fields)
   },
+  checkCreateParams: (mobile, password) => {
+    if (!password || password.length > 16 || password.length < 3) {
+      throw Error("password error")
+    } else if (isNaN(mobile) || mobile.length != 11) {
+      throw Error("mobile error")
+    }
+  },
   checkVoteLock: (pipelineResult, point) => {
     if (!pipelineResult || !pipelineResult[0] || pipelineResult[0][1]) {
       throw Error("没有获得锁")

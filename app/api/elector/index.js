@@ -63,10 +63,10 @@ router.post('/create', async (ctx) => {
   let created = new Date()
   let id = chance.guid()
 
-  if (!password || password.length > 16 || password.length < 3) {
-    ctx.throw(400, 'password error')
-  } else if (isNaN(mobile) || mobile.length != 11) {
-    ctx.throw(400, 'mobile error')
+  try {
+    electionUtils.checkCreateParams(mobile, password)
+  } catch(err) {
+    ctx.throw(400, err.message)
   }
 
   const redisHandler = ctx.redis
