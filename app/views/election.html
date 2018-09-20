@@ -38,6 +38,7 @@
 
     <div class="menu-bar">
       <div class="menu-bar-item active">投票</div>
+      <div class="menu-bar-item" v-on:click="onOpenCollect">拉票</div>
       <div class="menu-bar-item">排行榜</div>
     </div>
 
@@ -46,10 +47,10 @@
         <div class="pop-mask" v-on:click="handleClose"></div>
         <div class="pop-window">
           <tab-panel v-if="visibleMode === 'create'"></tab-panel>
+          <collect-panel v-if="visibleMode === 'collect'"></collect-panel>
           <vote-panel
             v-if="visibleMode === 'vote'"
             v-bind:elector="currentElector"
-            v-on:submit-collect="onSubmitCollect"
             v-on:submit-vote="onSubmitVote">
           </vote-panel>
         </div>
@@ -98,6 +99,7 @@
           return {
             mobileInput: '',
             passwordInput: '',
+            pointInput: '',
           }
         },
         template: '<div class="tab-panel">'
@@ -114,10 +116,72 @@
           + '          <input v-model="passwordInput" class="form-input" type="password" placeholder="投票人密码"/>'
           + '        </div>'
           + '        <div class="form-item">'
-          + '          <button class="submit-btn" v-on:click="' + "$emit('submit-collect', mobileInput, passwordInput)" + '">获取选票</button>'
+          + '          <input v-model="pointInput" class="form-input" placeholder="投票数"/>'
           + '        </div>'
           + '        <div class="form-item">'
-          + '          <button class="submit-btn pink" v-on:click="' + "$emit('submit-vote', mobileInput, passwordInput)" + '">马上投票</button>'
+          + '          <button class="submit-btn pink" v-on:click="' + "$emit('submit-vote', mobileInput, passwordInput, pointInput)" + '">马上投票</button>'
+          + '        </div>'
+          + '      </div>'
+          + '    </div>'
+          + ' </div>'
+          + '</div>'
+      })
+
+      Vue.component('collect-panel', {
+        data: function () {
+          return {
+            voter: {},
+            mobileInput: '',
+            passwordInput: '',
+          }
+        },
+        methods: {
+          submitCollect: function () {
+            var mobile = this.mobileInput
+            var password = this.passwordInput
+            if (!mobile || !password) {
+              alert('请填写完整信息之后再尝试')
+              return
+            }
+
+            var that = this
+            axios.post(DEMO_CONFIG.HOST_NAME + '/api/voter/collect', {
+              mobile: mobile,
+              password: password
+            })
+              .then(function (response) {
+                console.log(response)
+                var responseData = response.data
+                that.voter = responseData.data
+                alert('成功获得选票【' + responseData.data.collect_point + '】')
+              })
+              .catch(function (error) {
+                if (error.response) {
+                  // The request was made and the server responded with a status code
+                  // that falls out of the range of 2xx
+                  console.log(error.response);
+                  alert(error.response.status + ": " + error.response.data.message)
+                } else {
+                  alert('获取选票失败')
+                }
+              })
+          },
+        },
+        template: '<div class="tab-panel">'
+          + ' <div class="tab-panel-body">'
+          + '    <div class="tab-content">'
+          + '      <div class="form-bar">'
+          + '        <span class="form-bar-title">当前投票额：[ {{ voter.point || 0 }} ]</span>'
+          + '      </div>'
+          + '      <div class="form-container">'
+          + '        <div class="form-item">'
+          + '          <input v-model="mobileInput" class="form-input" placeholder="投票人手机号"/>'
+          + '        </div>'
+          + '        <div class="form-item">'
+          + '          <input v-model="passwordInput" class="form-input" type="password" placeholder="投票人密码"/>'
+          + '        </div>'
+          + '        <div class="form-item">'
+          + '          <button class="submit-btn" v-on:click="submitCollect">获取选票</button>'
           + '        </div>'
           + '      </div>'
           + '    </div>'
@@ -201,6 +265,10 @@
             this.visible = true
             this.visibleMode = 'create'
           },
+          onOpenCollect: function (event) {
+            this.visible = true
+            this.visibleMode = 'collect'
+          },
           onHandleDoVote: function (elector) {
             this.visible = true
             this.visibleMode = 'vote'
@@ -209,21 +277,22 @@
           handleClose: function (event) {
             this.visible = false
           },
-
-          onSubmitCollect: function (mobile, password) {
-            if (!mobile || !password) {
+          onSubmitVote: function (mobile, password, point) {
+            if (!mobile || !password || !point) {
               alert('请填写完整信息之后再尝试')
               return
             }
 
-            axios.post(DEMO_CONFIG.HOST_NAME + '/api/voter/collect', {
+            axios.post(DEMO_CONFIG.HOST_NAME + '/api/voter/do_vote', {
               mobile: mobile,
-              password: password
+              password: password,
+              point: point,
+              elector_id: this.currentElector.mobile
             })
               .then(function (response) {
                 console.log(response)
                 var responseData = response.data
-                alert('成功获得选票【' + responseData.data.collect_point + '】，当前剩余选票【' + responseData.data.point + '】')
+                alert('投票成功：' + responseData.data.point)
               })
               .catch(function (error) {
                 if (error.response) {
@@ -232,15 +301,9 @@
                   console.log(error.response);
                   alert(error.response.status + ": " + error.response.data.message)
                 } else {
-                  alert('获取选票失败')
+                  alert('投票失败')
                 }
               })
-          },
-          onSubmitVote: function (mobile, password) {
-            if (!mobile || !password) {
-              alert('请填写完整信息之后再尝试')
-              return
-            }
           }
         }
       })
