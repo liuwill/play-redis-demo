@@ -27,7 +27,7 @@
         <div class="grid-box grid-add" v-on:click="handleAddElector">
           <i class="add-icon"></i>
         </div>
-        <grid-item v-for="item in electorList" v-bind:elector="item" v-bind:key="item.id"></grid-item>
+        <grid-item v-for="item in electorList" v-on:open-vote="onHandleDoVote" v-bind:elector="item" v-bind:key="item.id"></grid-item>
       </div>
     </div>
 
@@ -40,7 +40,8 @@
       <div class="pop-layer" v-if="visible">
         <div class="pop-mask" v-on:click="handleClose"></div>
         <div class="pop-window">
-          <tab-panel></tab-panel>
+          <tab-panel v-if="visibleMode === 'create'"></tab-panel>
+          <vote-panel v-if="visibleMode === 'vote'" v-bind:elector="currentElector"></vote-panel>
         </div>
       </div>
     </transition>
@@ -66,17 +67,66 @@
       this.state = {
         message: 'my name',
         visible: false,
+        visibleMode: 'create',
+        currentElector: {},
         currentUser: {},
         electorList: [],
       }
 
       Vue.component('grid-item', {
         props: ['elector'],
-        template: '<div class="grid-box"><div class="grid-box-content">'
+        template: '<div class="grid-box" v-on:click="' + "$emit('open-vote', elector)" + '"><div class="grid-box-content">'
           + '<div class="avatar"><img :src="elector.avatar"/></div>'
           + '<div class="name" :title="elector.name">{{ elector.name }}</div>'
           + '<div class="company" :title="elector.profession">{{ elector.profession }}</div>'
           + '</div></div>'
+      })
+
+      Vue.component('vote-panel', {
+        props: ['elector'],
+        data: function () {
+          return {
+            mobileInput: '',
+            passwordInput: '',
+          }
+        },
+        methods: {
+          submitCollect: function () {
+            if (!this.mobileInput || !this.passwordInput) {
+              alert('请填写完整信息之后再尝试')
+              return
+            }
+          },
+          submitVote: function () {
+            if (!this.mobileInput || !this.passwordInput) {
+              alert('请填写完整信息之后再尝试')
+              return
+            }
+          },
+        },
+        template: '<div class="tab-panel">'
+          + ' <div class="tab-panel-body">'
+          + '    <div class="tab-content">'
+          + '      <div class="form-bar">'
+          + '        <span class="form-bar-title">候选人：[ {{ elector.name }} ]</span>'
+          + '      </div>'
+          + '      <div class="form-container">'
+          + '        <div class="form-item">'
+          + '          <input v-model="mobileInput" class="form-input" placeholder="投票人手机号"/>'
+          + '        </div>'
+          + '        <div class="form-item">'
+          + '          <input v-model="passwordInput" class="form-input" typ="password" placeholder="投票人密码"/>'
+          + '        </div>'
+          + '        <div class="form-item">'
+          + '          <button class="submit-btn" v-on:click="submitCollect">获取选票</button>'
+          + '        </div>'
+          + '        <div class="form-item">'
+          + '          <button class="submit-btn pink" v-on:click="submitVote">马上投票</button>'
+          + '        </div>'
+          + '      </div>'
+          + '    </div>'
+          + ' </div>'
+          + '</div>'
       })
 
       Vue.component('tab-panel', {
@@ -117,7 +167,7 @@
               })
           }
         },
-        template: '<div class="tab-panel">'
+        template: '<div class="tab-panel __bordered">'
           + ' <div class="tab-panel-header">'
           + '   <div class="tab-item" v-on:click="onClickTab(item.type)" v-bind:class="{active: current == item.type}" v-for="item in tabConfig">{{ item.type }}</div>'
           + ' </div>'
@@ -145,6 +195,13 @@
         methods: {
           handleAddElector: function (event) {
             this.visible = true
+            this.visibleMode = 'create'
+          },
+          onHandleDoVote: function (elector) {
+            this.visible = true
+            this.visibleMode = 'vote'
+            this.currentElector = elector
+            console.log('vote')
           },
           handleClose: function (event) {
             this.visible = false

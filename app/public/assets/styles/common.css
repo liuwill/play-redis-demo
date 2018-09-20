@@ -150,7 +150,6 @@ i.add-icon::after {
   opacity: .7;
 }
 .pop-layer .pop-window {
-  border-top: 4px solid #3b7dde;
   position: absolute;
   width: 100%;
   height: 50%;
@@ -158,7 +157,12 @@ i.add-icon::after {
   background: #fff;
 }
 
-.tab-panel {}
+.tab-panel {
+  box-shadow: 0px -1px 0px 0px #444;
+}
+.tab-panel.__bordered {
+  border-top: 4px solid #3b7dde;
+}
 
 .tab-panel-header {
   height: 3em;
@@ -236,6 +240,21 @@ i.add-icon::after {
 }
 .form-container .form-item .submit-btn:hover {
   background: #579ac7;
+}
+.form-container .form-item .submit-btn.pink {
+  background: #e43470;
+}
+.form-container .form-item .submit-btn.pink:hover {
+  background: #db6b90;
+}
+.form-bar {
+  text-align: center;
+  background: #273596;
+  height: 3.2em;
+  line-height: 3.2em;
+}
+.form-bar .form-bar-title {
+  color: #fff;
 }
 
 /* 可以设置不同的进入和离开动画 */
