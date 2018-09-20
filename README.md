@@ -36,12 +36,14 @@ yarn start
 
 ```
 
-## 接口测试
+## 查看服务
 
 ```shell
+# 查看页面
+http://localhost:3000
 
 # 测试接口，验证服务
 curl -X PUT -H "Content-type: application/json" --data '{"name":"liuwill"}' http://localhost:3000/json
 ```
 
-[查看操作手册文档](./MANUAL.md)
+[查看接口操作手册文档](./MANUAL.md)

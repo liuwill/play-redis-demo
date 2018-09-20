@@ -23,23 +23,38 @@
     </div>
 
     <div class="container">
-      <div class="data-grid">
-        <div class="grid-box grid-add" v-on:click="handleAddElector">
-          <i class="add-icon"></i>
+      <transition name="slide-fade">
+        <div class="data-grid" v-if="page == 'election'">
+          <div class="grid-box grid-add" v-on:click="handleAddElector">
+            <i class="add-icon"></i>
+          </div>
+          <grid-item
+            v-for="item in electorList"
+            v-on:open-vote="onHandleDoVote"
+            v-bind:elector="item"
+            v-bind:key="item.id">
+          </grid-item>
         </div>
-        <grid-item
-          v-for="item in electorList"
-          v-on:open-vote="onHandleDoVote"
-          v-bind:elector="item"
-          v-bind:key="item.id">
-        </grid-item>
-      </div>
+        <div class="ranking-container" v-if="page == 'ranking'">
+          <div class="ranking-hero"></div>
+          <div class="ranking-list">
+              <div class="ranking-list-item"
+                v-for="item in rankingList"
+              >
+                <div class="ranking-data-pos">{{ item.position }}</div>
+                <div class="ranking-data-avatar"><img :src="item.avatar"/></div>
+                <div class="ranking-data-name">{{ item.name }}</div>
+                <div class="ranking-data-point">{{ item.point }}</div>
+              </div>
+          </div>
+        </div>
+      </transition>
     </div>
 
     <div class="menu-bar">
-      <div class="menu-bar-item active">投票</div>
+      <div class="menu-bar-item" v-bind:class="{active: page == 'election'}" v-on:click="onChangeElection">投票</div>
       <div class="menu-bar-item" v-on:click="onOpenCollect">拉票</div>
-      <div class="menu-bar-item">排行榜</div>
+      <div class="menu-bar-item" v-bind:class="{active: page == 'ranking'}" v-on:click="onChangeRanking">排行榜</div>
     </div>
 
     <transition name="slide-fade">
@@ -66,6 +81,7 @@
     }
     var EVENT_TYPE = {
       LOAD_ELECTORS: "load_electors",
+      LOAD_RANKING: "load_ranking",
       CREATE_USER_SUCCESS: "create_user_success"
     }
 
@@ -76,12 +92,13 @@
       this.root = root
       this.voter = {}
       this.state = {
-        message: 'my name',
+        page: 'election',
         visible: false,
         visibleMode: 'create',
         currentElector: {},
         currentUser: {},
         electorList: [],
+        rankingList: []
       }
 
       Vue.component('grid-item', {
@@ -261,6 +278,14 @@
         el: '#app',
         data: this.state,
         methods: {
+          onChangeRanking: function () {
+            this.page = 'ranking'
+            root.loadRanking()
+          },
+          onChangeElection: function () {
+            this.page = 'election'
+            root.loadElectors()
+          },
           handleAddElector: function (event) {
             this.visible = true
             this.visibleMode = 'create'
@@ -335,6 +360,14 @@
             isLoad: isLoad,
             electorList: electorList
           })
+        case "LOAD_RANKING":
+          var rankingList = []
+          if (action.payload && action.payload.list && action.payload.list.length) {
+            rankingList = action.payload.list
+          }
+          this.setState({
+            rankingList: rankingList
+          })
       }
     }
 
@@ -355,6 +388,15 @@
 
     VoterClient.prototype.initEvent = function () {
       var that = this
+      this.emitter.on(EVENT_TYPE.LOAD_RANKING, function (response) {
+        that.gameApp.update({
+          type: "LOAD_RANKING",
+          payload: {
+            list: response.data.list
+          }
+        })
+      })
+
       this.emitter.on(EVENT_TYPE.LOAD_ELECTORS, function (response) {
         that.gameApp.update({
           type: "LOAD_ELECTORS",
@@ -369,6 +411,26 @@
           type: "CREATE_USER_SUCCESS",
         })
       })
+    }
+
+    VoterClient.prototype.loadRanking = function () {
+      var emitter = this.emitter
+
+      axios.get(DEMO_CONFIG.HOST_NAME + '/api/elector/ranking')
+        .then(function (response) {
+          console.log(response)
+          emitter.trigger(EVENT_TYPE.LOAD_RANKING, response.data)
+        })
+        .catch(function (error) {
+          if (error.response) {
+            // The request was made and the server responded with a status code
+            // that falls out of the range of 2xx
+            console.log(error.response);
+            alert(error.response.status + ": " + error.response.data.message)
+          } else {
+            alert('加载失败')
+          }
+        })
     }
 
     VoterClient.prototype.loadElectors = function () {
