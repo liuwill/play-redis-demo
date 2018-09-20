@@ -112,19 +112,25 @@ router.get('/ranking', async (ctx) => {
   let electorMap = pipelineResult[0][1]
   let rawRankData = pipelineResult[1][1]
   let rankList = []
+  let position = 1
   for (let i = 0; i < rawRankData.length; i += 2) {
     const mobile = rawRankData[i]
     const data = JSON.parse(electorMap[mobile])
     rankList.push(Object.assign({
       mobile,
+      position,
       point: rawRankData[i + 1],
     }, electionUtils.buildElectorData(data)))
+    position++
   }
 
   ctx.body = {
     status: true,
     code: 0,
-    data: rankList,
+    data: {
+      list: rankList,
+      total: rankList.length,
+    },
   }
 })
 
