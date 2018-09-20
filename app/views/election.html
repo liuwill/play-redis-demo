@@ -24,16 +24,20 @@
 
     <div class="container">
       <transition name="slide-fade">
-        <div class="data-grid" v-if="page == 'election'">
-          <div class="grid-box grid-add" v-on:click="handleAddElector">
-            <i class="add-icon"></i>
+        <div class="grid-container" v-if="page == 'election'">
+          <div class="grid-hero"></div>
+          <div class="data-grid" v-if="page == 'election'">
+            <div class="grid-box grid-add" v-on:click="handleAddElector">
+              <i class="add-icon"></i>
+            </div>
+            <grid-item v-for="item in electorList" v-on:open-vote="onHandleDoVote" v-bind:elector="item" v-bind:key="item.id">
+            </grid-item>
           </div>
-          <grid-item v-for="item in electorList" v-on:open-vote="onHandleDoVote" v-bind:elector="item" v-bind:key="item.id">
-          </grid-item>
         </div>
         <div class="ranking-container" v-if="page == 'ranking'">
           <div class="ranking-hero"></div>
           <div class="ranking-list">
+            <div class="ranking-empty" v-if="!rankingList || !rankingList.length">暂时还没有人投票！</div>
             <ranking-item v-for="item in rankingList" v-on:open-vote="onHandleDoVote" v-bind:elector="item" v-bind:key="item.id"></ranking-item>
           </div>
         </div>
