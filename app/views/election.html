@@ -28,24 +28,13 @@
           <div class="grid-box grid-add" v-on:click="handleAddElector">
             <i class="add-icon"></i>
           </div>
-          <grid-item
-            v-for="item in electorList"
-            v-on:open-vote="onHandleDoVote"
-            v-bind:elector="item"
-            v-bind:key="item.id">
+          <grid-item v-for="item in electorList" v-on:open-vote="onHandleDoVote" v-bind:elector="item" v-bind:key="item.id">
           </grid-item>
         </div>
         <div class="ranking-container" v-if="page == 'ranking'">
           <div class="ranking-hero"></div>
           <div class="ranking-list">
-              <div class="ranking-list-item"
-                v-for="item in rankingList"
-              >
-                <div class="ranking-data-pos">{{ item.position }}</div>
-                <div class="ranking-data-avatar"><img :src="item.avatar"/></div>
-                <div class="ranking-data-name">{{ item.name }}</div>
-                <div class="ranking-data-point">{{ item.point }}</div>
-              </div>
+            <ranking-item v-for="item in rankingList" v-on:open-vote="onHandleDoVote" v-bind:elector="item" v-bind:key="item.id"></ranking-item>
           </div>
         </div>
       </transition>
@@ -63,10 +52,7 @@
         <div class="pop-window">
           <tab-panel v-if="visibleMode === 'create'"></tab-panel>
           <collect-panel v-if="visibleMode === 'collect'"></collect-panel>
-          <vote-panel
-            v-if="visibleMode === 'vote'"
-            v-bind:elector="currentElector"
-            v-on:submit-vote="onSubmitVote">
+          <vote-panel v-if="visibleMode === 'vote'" v-bind:elector="currentElector" v-on:submit-vote="onSubmitVote">
           </vote-panel>
         </div>
       </div>
@@ -100,6 +86,16 @@
         electorList: [],
         rankingList: []
       }
+
+      Vue.component('ranking-item', {
+        props: ['elector'],
+        template: '<div class="ranking-list-item" v-on:click="' + "$emit('open-vote', elector)" + '">'
+          + '<div class="ranking-data-pos">{{ elector.position }}</div>'
+          + '<div class="ranking-data-avatar"><img :src="elector.avatar"/></div>'
+          + '<div class="ranking-data-name">{{ elector.name }}</div>'
+          + '<div class="ranking-data-point">{{ elector.point }}</div>'
+          + '</div>'
+      })
 
       Vue.component('grid-item', {
         props: ['elector'],

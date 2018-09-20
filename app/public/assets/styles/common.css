@@ -183,7 +183,7 @@ i.add-icon::after {
   border-radius: 100%;
 }
 .ranking-data-name {
-
+  flex-basis: 33%;
 }
 .ranking-data-point {
   font-size: 1.2em;
