@@ -30,8 +30,7 @@
             <div class="grid-box grid-add" v-on:click="handleAddElector">
               <i class="add-icon"></i>
             </div>
-            <grid-item v-for="item in electorList" v-on:open-vote="onHandleDoVote" v-bind:elector="item" v-bind:key="item.id">
-            </grid-item>
+            <grid-item v-for="item in electorList" v-on:open-vote="onHandleDoVote" v-bind:elector="item" v-bind:key="item.id"></grid-item>
           </div>
         </div>
         <div class="ranking-container" v-if="page == 'ranking'">
@@ -46,8 +45,8 @@
 
     <div class="menu-bar">
       <div class="menu-bar-item" v-bind:class="{active: page == 'election'}" v-on:click="onChangeElection">投票</div>
-      <div class="menu-bar-item" v-on:click="onOpenCollect">拉票</div>
       <div class="menu-bar-item" v-bind:class="{active: page == 'ranking'}" v-on:click="onChangeRanking">排行榜</div>
+      <div class="menu-bar-item" v-on:click="onOpenCollect">拉票</div>
     </div>
 
     <transition name="slide-fade">

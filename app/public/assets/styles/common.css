@@ -118,10 +118,11 @@ i.add-icon::after {
   align-items: center;
 }
 .grid-box .grid-box-content .avatar {
-  border: 2px solid #fff;
+  box-shadow: 0px 0px 4px 2px #fff;
   width: 4em;
   height: 4em;
   margin-bottom: 3px;
+  border-radius: 100%;
 }
 .grid-box .grid-box-content .avatar>img {
   width: 100%;
