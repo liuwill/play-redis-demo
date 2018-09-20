@@ -27,7 +27,12 @@
         <div class="grid-box grid-add" v-on:click="handleAddElector">
           <i class="add-icon"></i>
         </div>
-        <grid-item v-for="item in electorList" v-on:open-vote="onHandleDoVote" v-bind:elector="item" v-bind:key="item.id"></grid-item>
+        <grid-item
+          v-for="item in electorList"
+          v-on:open-vote="onHandleDoVote"
+          v-bind:elector="item"
+          v-bind:key="item.id">
+        </grid-item>
       </div>
     </div>
 
@@ -41,7 +46,12 @@
         <div class="pop-mask" v-on:click="handleClose"></div>
         <div class="pop-window">
           <tab-panel v-if="visibleMode === 'create'"></tab-panel>
-          <vote-panel v-if="visibleMode === 'vote'" v-bind:elector="currentElector"></vote-panel>
+          <vote-panel
+            v-if="visibleMode === 'vote'"
+            v-bind:elector="currentElector"
+            v-on:submit-collect="onSubmitCollect"
+            v-on:submit-vote="onSubmitVote">
+          </vote-panel>
         </div>
       </div>
     </transition>
@@ -90,20 +100,6 @@
             passwordInput: '',
           }
         },
-        methods: {
-          submitCollect: function () {
-            if (!this.mobileInput || !this.passwordInput) {
-              alert('请填写完整信息之后再尝试')
-              return
-            }
-          },
-          submitVote: function () {
-            if (!this.mobileInput || !this.passwordInput) {
-              alert('请填写完整信息之后再尝试')
-              return
-            }
-          },
-        },
         template: '<div class="tab-panel">'
           + ' <div class="tab-panel-body">'
           + '    <div class="tab-content">'
@@ -115,13 +111,13 @@
           + '          <input v-model="mobileInput" class="form-input" placeholder="投票人手机号"/>'
           + '        </div>'
           + '        <div class="form-item">'
-          + '          <input v-model="passwordInput" class="form-input" typ="password" placeholder="投票人密码"/>'
+          + '          <input v-model="passwordInput" class="form-input" type="password" placeholder="投票人密码"/>'
           + '        </div>'
           + '        <div class="form-item">'
-          + '          <button class="submit-btn" v-on:click="submitCollect">获取选票</button>'
+          + '          <button class="submit-btn" v-on:click="' + "$emit('submit-collect', mobileInput, passwordInput)" + '">获取选票</button>'
           + '        </div>'
           + '        <div class="form-item">'
-          + '          <button class="submit-btn pink" v-on:click="submitVote">马上投票</button>'
+          + '          <button class="submit-btn pink" v-on:click="' + "$emit('submit-vote', mobileInput, passwordInput)" + '">马上投票</button>'
           + '        </div>'
           + '      </div>'
           + '    </div>'
@@ -152,18 +148,26 @@
               return
             }
 
+            var that = this
             axios.post(DEMO_CONFIG.HOST_NAME + '/api/' + this.current + '/create', {
               mobile: this.mobileInput,
               password: this.passwordInput
             })
               .then(function (response) {
                 console.log(response)
+                alert('成功创建' + that.current + ': ' + response.data.data.name)
                 root.emitter.trigger(EVENT_TYPE.CREATE_USER_SUCCESS, response.data)
                 root.loadElectors()
               })
               .catch(function (error) {
-                console.log(error)
-                alert(error.message)
+                if (error.response) {
+                  // The request was made and the server responded with a status code
+                  // that falls out of the range of 2xx
+                  console.log(error.response);
+                  alert(error.response.status + ": " + error.response.data.message)
+                } else {
+                  alert('创建失败')
+                }
               })
           }
         },
@@ -178,7 +182,7 @@
           + '          <input v-model="mobileInput" class="form-input" placeholder="手机号"/>'
           + '        </div>'
           + '        <div class="form-item">'
-          + '          <input v-model="passwordInput" class="form-input" typ="password" placeholder="密码"/>'
+          + '          <input v-model="passwordInput" class="form-input" type="password" placeholder="密码"/>'
           + '        </div>'
           + '        <div class="form-item">'
           + '          <button class="submit-btn" v-on:click="submitCreateUser">创建用户</button>'
@@ -201,10 +205,42 @@
             this.visible = true
             this.visibleMode = 'vote'
             this.currentElector = elector
-            console.log('vote')
           },
           handleClose: function (event) {
             this.visible = false
+          },
+
+          onSubmitCollect: function (mobile, password) {
+            if (!mobile || !password) {
+              alert('请填写完整信息之后再尝试')
+              return
+            }
+
+            axios.post(DEMO_CONFIG.HOST_NAME + '/api/voter/collect', {
+              mobile: mobile,
+              password: password
+            })
+              .then(function (response) {
+                console.log(response)
+                var responseData = response.data
+                alert('成功获得选票【' + responseData.data.collect_point + '】，当前剩余选票【' + responseData.data.point + '】')
+              })
+              .catch(function (error) {
+                if (error.response) {
+                  // The request was made and the server responded with a status code
+                  // that falls out of the range of 2xx
+                  console.log(error.response);
+                  alert(error.response.status + ": " + error.response.data.message)
+                } else {
+                  alert('获取选票失败')
+                }
+              })
+          },
+          onSubmitVote: function (mobile, password) {
+            if (!mobile || !password) {
+              alert('请填写完整信息之后再尝试')
+              return
+            }
           }
         }
       })
@@ -281,8 +317,14 @@
           emitter.trigger(EVENT_TYPE.LOAD_ELECTORS, response.data)
         })
         .catch(function (error) {
-          console.log(error)
-          alert(error.message)
+          if (error.response) {
+            // The request was made and the server responded with a status code
+            // that falls out of the range of 2xx
+            console.log(error.response);
+            alert(error.response.status + ": " + error.response.data.message)
+          } else {
+            alert('加载失败')
+          }
         })
     }
 
