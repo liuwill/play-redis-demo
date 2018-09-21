@@ -33,6 +33,7 @@
             <grid-item v-for="item in electorList" v-on:open-vote="onHandleDoVote" v-bind:elector="item" v-bind:key="item.id"></grid-item>
           </div>
         </div>
+
         <div class="ranking-container" v-if="page == 'ranking'">
           <div class="ranking-hero"></div>
           <div class="ranking-list">
@@ -40,12 +41,27 @@
             <ranking-item v-for="item in rankingList" v-on:open-vote="onHandleDoVote" v-bind:elector="item" v-bind:key="item.id"></ranking-item>
           </div>
         </div>
+
+        <div class="voter-container" v-if="page == 'voter'">
+          <div class="voter-hero"></div>
+          <div class="voter-grid">
+            <div class="voter-empty" v-if="!voterList || !voterList.length">还没有创建用户！</div>
+            <div class="voter-item" v-for="item in voterList">
+              <div class="voter-content">
+                <div class="voter-avatar"><img :src="item.avatar" /></div>
+                <div class="voter-name">{{ item.name }}</div>
+                <div class="voter-action"></div>
+              </div>
+            </div>
+          </div>
+        </div>
       </transition>
     </div>
 
     <div class="menu-bar">
-      <div class="menu-bar-item" v-bind:class="{active: page == 'election'}" v-on:click="onChangeElection">投票</div>
+      <div class="menu-bar-item" v-bind:class="{active: page == 'election'}" v-on:click="onChangeElection">竞选人</div>
       <div class="menu-bar-item" v-bind:class="{active: page == 'ranking'}" v-on:click="onChangeRanking">排行榜</div>
+      <div class="menu-bar-item" v-bind:class="{active: page == 'voter'}" v-on:click="onChangeVoter">投票人</div>
       <div class="menu-bar-item" v-on:click="onOpenCollect">拉票</div>
     </div>
 
@@ -69,9 +85,10 @@
       HOST_NAME: ''
     }
     var EVENT_TYPE = {
-      LOAD_ELECTORS: "load_electors",
-      LOAD_RANKING: "load_ranking",
-      CREATE_USER_SUCCESS: "create_user_success"
+      LOAD_ELECTORS: "LOAD_ELECTORS",
+      LOAD_RANKING: "LOAD_RANKING",
+      LOAD_VOTERS: "LOAD_VOTERS",
+      CREATE_USER_SUCCESS: "CREATE_USER_SUCCESS"
     }
 
     var globalEmitter = new Emitter()
@@ -86,7 +103,8 @@
         currentElector: {},
         currentUser: {},
         electorList: [],
-        rankingList: []
+        rankingList: [],
+        voterList: []
       }
 
       Vue.component('ranking-item', {
@@ -289,8 +307,18 @@
               that.onChangeRanking()
             },
           })
+          historyUtil.register('voter', {
+            route: function () {
+              that.onChangeVoter()
+            },
+          })
         },
         methods: {
+          onChangeVoter: function () {
+            this.page = 'voter'
+            historyUtil.push('voter')
+            root.loadVoters()
+          },
           onChangeRanking: function () {
             this.page = 'ranking'
             historyUtil.push('ranking')
@@ -383,6 +411,17 @@
           this.setState({
             rankingList: rankingList
           })
+        case "LOAD_VOTERS":
+          var isLoad = false
+          var voterList = []
+          if (action.payload && action.payload.list && action.payload.list.length) {
+            isLoad = true
+            voterList = action.payload.list
+          }
+          this.setState({
+            isLoad: isLoad,
+            voterList: voterList
+          })
       }
     }
 
@@ -423,11 +462,41 @@
         })
       })
 
+      this.emitter.on(EVENT_TYPE.LOAD_VOTERS, function (response) {
+        that.gameApp.update({
+          type: "LOAD_VOTERS",
+          payload: {
+            list: response.data.list
+          }
+        })
+      })
+
       this.emitter.on(EVENT_TYPE.CREATE_USER_SUCCESS, function (response) {
         that.gameApp.update({
           type: "CREATE_USER_SUCCESS",
         })
       })
+    }
+
+    VoterClient.prototype.loadVoters = function () {
+      var emitter = this.emitter
+
+      axios.get(DEMO_CONFIG.HOST_NAME + '/api/voter/list')
+        .then(function (response) {
+          console.log(response)
+          emitter.trigger(EVENT_TYPE.LOAD_VOTERS, response.data)
+        })
+        .catch(function (error) {
+          if (error.response) {
+            // The request was made and the server responded with a status code
+            // that falls out of the range of 2xx
+            console.log(error.response);
+            alert(error.response.status + ": " + error.response.data.message)
+          } else {
+            console.error(error)
+            alert('加载失败')
+          }
+        })
     }
 
     VoterClient.prototype.loadRanking = function () {

@@ -27,7 +27,7 @@ export default {
     return pickField(data, fields)
   },
   buildVoteData: (data) => {
-    const fields = ['id', 'mobile', 'email', 'address', 'name', 'created', 'point']
+    const fields = ['id', 'mobile', 'email', 'address', 'name', 'avatar', 'created', 'point']
     return pickField(data, fields)
   },
   checkCreateParams: (mobile, password) => {

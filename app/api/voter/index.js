@@ -82,6 +82,7 @@ router.post('/create', async (ctx) => {
   let email = chance.email({ domain: "liuwill.com" })
   let created = new Date()
   let id = chance.guid()
+  let avatar = chance.avatar({ protocol: 'http' })
 
   try {
     electionUtils.checkCreateParams(mobile, password)
@@ -103,6 +104,7 @@ router.post('/create', async (ctx) => {
     address,
     name,
     created,
+    avatar,
   }
 
   await redisHandler.hset(hashKey, mobile, JSON.stringify(createdVoter))

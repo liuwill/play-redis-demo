@@ -211,6 +211,56 @@ i.add-icon::after {
   font-weight: bolder;
 }
 
+/* 用户列表 */
+.voter-container {
+
+}
+.voter-hero {
+  background-image: url(/static/image/moon.jpg);
+  background-position: 0 0;
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 18em;
+}
+.voter-grid {
+  display: flex;
+  position: relative;
+  flex-wrap: wrap;
+}
+.voter-item {
+  flex: 0 0 50%;
+  padding: 2em 1em;
+  box-sizing: border-box;
+
+  text-align: center;
+  cursor: pointer;
+
+  border-right: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+}
+.voter-content {
+  width: 100%;
+  text-align: center;
+
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+}
+.voter-item .voter-avatar {
+  box-shadow: 0px 0px 4px 2px #fff;
+  width: 4em;
+  height: 4em;
+  margin-bottom: 3px;
+  border-radius: 100%;
+}
+.voter-item .voter-avatar>img {
+  width: 100%;
+  border-radius: 100%;
+}
+.voter-item .voter-name {
+  margin-top: 0.5em;
+}
+
 /* 弹窗模块 */
 .pop-layer {
   position: absolute;
