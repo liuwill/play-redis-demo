@@ -4,20 +4,15 @@ import validator from 'validator'
 import storeConstant from '../../constant/store'
 import electionUtils from '../../utils/election'
 
+import apiService from '../service'
+
 const chance = require('chance').Chance()
 
 const router = new Router()
 
 router.get('/list', async (ctx) => {
-  const redisHandler = ctx.redis
-
-  const hashKey = storeConstant.ELECTOR_USER_HASH_KEY
-  let rawElectorMap = await redisHandler.hgetall(hashKey)
-  let electorList = Object.values(rawElectorMap).map(item => {
-    let data = JSON.parse(item)
-    return electionUtils.buildElectorData(data)
-  })
-
+  let hashKey = storeConstant.ELECTOR_USER_HASH_KEY
+  let electorList = await apiService.listAll(hashKey, electionUtils.buildElectorData)
   ctx.body = {
     status: true,
     code: 0,

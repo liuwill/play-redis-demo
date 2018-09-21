@@ -12,14 +12,8 @@ const chance = require('chance').Chance()
 const router = new Router()
 
 router.get('/list', async (ctx) => {
-  const redisHandler = ctx.redis
-
-  const hashKey = storeConstant.VOTE_USER_HASH_KEY
-  let rawVoterMap = await redisHandler.hgetall(hashKey)
-  let voterList = Object.values(rawVoterMap).map(item => {
-    let data = JSON.parse(item)
-    return electionUtils.buildVoteData(data)
-  })
+  let hashKey = storeConstant.VOTE_USER_HASH_KEY
+  let voterList = await apiService.listAll(hashKey, electionUtils.buildVoteData)
 
   ctx.body = {
     status: true,
