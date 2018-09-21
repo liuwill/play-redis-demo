@@ -79,12 +79,19 @@ function parseParams(raw) {
 function HistoryUtil(location, history) {
   this.history = history
   this.location = location
+  this.defaultPath = ''
   this.router = {}
 
   this.current = ''
   this.emitter = new Emitter()
 
-  this.emitter.on('HISTORY_PUSH_STATE', this.handler)
+  var that = this
+  this.emitter.on('HISTORY_PUSH_STATE', function (route) {
+    that.handler(route)
+  })
+  window.addEventListener('popstate', function (event) {
+    that.popstate(event)
+  })
 }
 
 HistoryUtil.prototype.init = function () {
@@ -95,7 +102,23 @@ HistoryUtil.prototype.init = function () {
   if (page && this.router[page]) {
     this.current = page
     this.handler({ path: page })
+  } else if (this.defaultPath) {
+    this.current = this.defaultPath
+    this.handler({ path: this.current })
   }
+}
+
+HistoryUtil.prototype.popstate = function (event) {
+  if (!event.state || !event.state.path) {
+    return
+  }
+
+  var path = event.state.path
+  if (!this.router[path] || path === this.current) {
+    return
+  }
+
+  this.handler(event.state)
 }
 
 HistoryUtil.prototype.handler = function (route) {
@@ -109,13 +132,18 @@ HistoryUtil.prototype.handler = function (route) {
 }
 
 HistoryUtil.prototype.register = function (path, router) {
-  if (router && typeof router.route === 'function') {
-    this.router[path] = router
+  if (!router || typeof router.route !== 'function') {
+    return
+  }
+
+  this.router[path] = router
+  if (!this.defaultPath || router.default === true) {
+    this.defaultPath = path
   }
 }
 
 HistoryUtil.prototype.push = function (path, data) {
-  this.history.pushState(data, '', '?page=' + path)
+  this.history.pushState({ path: path, data: data }, '', '?page=' + path)
   this.emitter.trigger('HISTORY_PUSH_STATE', { path: path, data: data })
 }
 

@@ -61,9 +61,9 @@
     </div>
 
     <div class="menu-bar">
-      <div class="menu-bar-item" v-bind:class="{active: page == 'election'}" v-on:click="onChangeElection">竞选人</div>
-      <div class="menu-bar-item" v-bind:class="{active: page == 'ranking'}" v-on:click="onChangeRanking">排行榜</div>
-      <div class="menu-bar-item" v-bind:class="{active: page == 'voter'}" v-on:click="onChangeVoter">投票人</div>
+      <div class="menu-bar-item" v-bind:class="{active: page == 'election'}" v-on:click="onJumpElection">竞选人</div>
+      <div class="menu-bar-item" v-bind:class="{active: page == 'ranking'}" v-on:click="onJumpRanking">排行榜</div>
+      <div class="menu-bar-item" v-bind:class="{active: page == 'voter'}" v-on:click="onJumpVoter">投票人</div>
     </div>
 
     <transition name="slide-fade">
@@ -318,19 +318,25 @@
           })
         },
         methods: {
+          onJumpVoter: function() {
+            historyUtil.push('voter')
+          },
+          onJumpRanking: function() {
+            historyUtil.push('ranking')
+          },
+          onJumpElection: function() {
+            historyUtil.push('election')
+          },
           onChangeVoter: function () {
             this.page = 'voter'
-            historyUtil.push('voter')
             root.loadVoters()
           },
           onChangeRanking: function () {
             this.page = 'ranking'
-            historyUtil.push('ranking')
             root.loadRanking()
           },
           onChangeElection: function () {
             this.page = 'election'
-            historyUtil.push('election')
             root.loadElectors()
           },
           handleAddElector: function (event) {
