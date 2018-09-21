@@ -24,7 +24,7 @@
 
     <div class="container">
       <transition name="pull-fade">
-        <div class="grid-container" v-if="page == 'election'">
+        <div class="grid-container wrapper" v-if="page == 'election'">
           <div class="grid-hero"></div>
           <div class="data-grid" v-if="page == 'election'">
             <div class="grid-box grid-add" v-on:click="handleAddElector">
@@ -34,7 +34,7 @@
           </div>
         </div>
 
-        <div class="ranking-container" v-if="page == 'ranking'">
+        <div class="ranking-container wrapper" v-if="page == 'ranking'">
           <div class="ranking-hero"></div>
           <div class="ranking-list">
             <div class="ranking-empty" v-if="!rankingList || !rankingList.length">暂时还没有人投票！</div>
@@ -42,7 +42,7 @@
           </div>
         </div>
 
-        <div class="voter-container" v-if="page == 'voter'">
+        <div class="voter-container wrapper" v-if="page == 'voter'">
           <div class="voter-hero"></div>
           <div class="voter-grid">
             <div class="voter-empty" v-if="!voterList || !voterList.length">还没有创建用户！</div>
@@ -78,6 +78,7 @@
       </div>
     </transition>
   </div>
+  <div class="float-tip"></div>
 </body>
 
 <script type="text/javascript">

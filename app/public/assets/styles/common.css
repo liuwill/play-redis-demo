@@ -2,14 +2,39 @@ html, body {
   font-family: "Helvetica Neue", "Helvetica", "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", "メイリオ", "Meiryo", "ＭＳ Ｐゴシック", arial, sans-serif;
   color: #211922;
   font-size: 12px;
+  height: 100%;
 }
 
 body {
   margin: 0;
 }
+.float-tip {
+  display: none;
+}
+@media screen and (min-width: 425px) {
+  .main {
+    width: 425px;
+    height: 100%;
+    position: relative;
+    border: 1px solid #ccc;
+    margin: auto;
+  }
+}
+@media screen and (min-width: 640px) {
+  .float-tip {
+    display: none;
+    position: absolute;
+
+    width: 100px;
+    height: 120px;
+    border: 1px solid;
+    top: 50%;
+    right: 5%;
+  }
+}
 
 .status-bar {
-  position: fixed;
+  position: absolute;
   top: 0;
   height: 3.5em;
   line-height: 3.5em;
@@ -27,7 +52,7 @@ body {
 .menu-bar {
   height: 5em;
   width: 100%;
-  position: fixed;
+  position: absolute;
   bottom: 0;
   background: #292a2e;
   display: flex;
@@ -58,9 +83,17 @@ body {
 
 .container {
   width: 100%;
-  margin-top: 3.5em;
+  height: 100%;
   position: relative;
-  margin-bottom: 6em;
+  padding-top: 3.5em;
+  padding-bottom: 5em;
+  box-sizing: border-box;
+  /* margin-top: 3.5em; */
+  /* margin-bottom: 6em; */
+}
+.container .wrapper {
+  height: 100%;
+  overflow: auto;
 }
 
 /* 九宫格相关 */
