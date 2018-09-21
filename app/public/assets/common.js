@@ -109,7 +109,11 @@ HistoryUtil.prototype.init = function () {
 }
 
 HistoryUtil.prototype.popstate = function (event) {
+  console.log(event.state)
   if (!event.state || !event.state.path) {
+    if (this.defaultPath) {
+      this.handler({ path: this.defaultPath })
+    }
     return
   }
 

@@ -167,6 +167,7 @@
         props: ['voter', 'mobile'],
         data: function () {
           return {
+            point: 0,
             mobileInput: '',
             passwordInput: '',
           }
@@ -188,7 +189,7 @@
               .then(function (response) {
                 console.log(response)
                 var responseData = response.data
-                that.voter = responseData.data
+                that.point = responseData.data.point
                 alert('成功获得选票【' + responseData.data.collect_point + '】')
                 root.loadVoters()
               })
@@ -208,7 +209,7 @@
           + ' <div class="tab-panel-body">'
           + '    <div class="tab-content">'
           + '      <div class="form-bar">'
-          + '        <span class="form-bar-title">当前投票额：[ {{ voter.point || 0 }} ]</span>'
+          + '        <span class="form-bar-title">当前投票额：[ {{ this.point || voter.point || 0 }} ]</span>'
           + '      </div>'
           + '      <div class="form-container">'
           + '        <div class="form-item">'
