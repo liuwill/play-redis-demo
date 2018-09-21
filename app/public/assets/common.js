@@ -59,7 +59,7 @@ Emitter.prototype.reset = function () {
   }
 }
 
-function parseParams (raw) {
+function parseParams(raw) {
   var target = {}
   if (!raw) {
     return target
@@ -76,8 +76,45 @@ function parseParams (raw) {
   return target
 }
 
-function HistoryUtil(search, hash, history) {
-  this.hash = parseParams(hash)
-  this.search = parseParams(search)
+function HistoryUtil(location, history) {
   this.history = history
+  this.location = location
+  this.router = {}
+
+  this.current = ''
+  this.emitter = new Emitter()
+
+  this.emitter.on('HISTORY_PUSH_STATE', this.handler)
+}
+
+HistoryUtil.prototype.init = function () {
+  this.hash = parseParams(location.hash)
+  this.search = parseParams(location.search)
+
+  var page = this.search.page
+  if (page && this.router[page]) {
+    this.current = page
+    this.handler({ path: page })
+  }
+}
+
+HistoryUtil.prototype.handler = function (route) {
+  if (!this.router || !this.router.hasOwnProperty(route.path)) {
+    return
+  }
+
+  this.current = route.path
+  var config = this.router[route.path]
+  config.route.call(null, route.data)
+}
+
+HistoryUtil.prototype.register = function (path, router) {
+  if (router && typeof router.route === 'function') {
+    this.router[path] = router
+  }
+}
+
+HistoryUtil.prototype.push = function (path, data) {
+  this.history.pushState(data, '', '?page=' + path)
+  this.emitter.trigger('HISTORY_PUSH_STATE', { path: path, data: data })
 }

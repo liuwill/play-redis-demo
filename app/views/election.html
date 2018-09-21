@@ -75,8 +75,6 @@
     }
 
     var globalEmitter = new Emitter()
-    var historyUtil = new HistoryUtil(window.location.search, window.location.hash, window.history)
-    console.log(historyUtil)
 
     function VoterApp(root) {
       this.root = root
@@ -274,16 +272,33 @@
           + '</div>'
       })
 
+      var historyUtil = this.root.historyUtil
       this.app = new Vue({
         el: '#app',
         data: this.state,
+        created: function () {
+          let that = this
+
+          historyUtil.register('election', {
+            route: function () {
+              that.onChangeElection()
+            },
+          })
+          historyUtil.register('ranking', {
+            route: function () {
+              that.onChangeRanking()
+            },
+          })
+        },
         methods: {
           onChangeRanking: function () {
             this.page = 'ranking'
+            historyUtil.push('ranking')
             root.loadRanking()
           },
           onChangeElection: function () {
             this.page = 'election'
+            historyUtil.push('election')
             root.loadElectors()
           },
           handleAddElector: function (event) {
@@ -375,15 +390,17 @@
 
     function VoterClient(appServer) {
       this.appServer = appServer;
+      this.historyUtil = new HistoryUtil(window.location, window.history)
       this.gameApp = new VoterApp(this)
 
       this.emitter = globalEmitter
       this.initEvent()
 
-      var that = this;
-      setTimeout(function () {
-        that.loadElectors()
-      }, 1000)
+      this.historyUtil.init()
+      // var that = this;
+      // setTimeout(function () {
+      //   that.loadElectors()
+      // }, 1000)
     }
 
     VoterClient.prototype.initEvent = function () {
@@ -428,6 +445,7 @@
             console.log(error.response);
             alert(error.response.status + ": " + error.response.data.message)
           } else {
+            console.error(error)
             alert('加载失败')
           }
         })
@@ -448,6 +466,7 @@
             console.log(error.response);
             alert(error.response.status + ": " + error.response.data.message)
           } else {
+            console.error(error)
             alert('加载失败')
           }
         })
