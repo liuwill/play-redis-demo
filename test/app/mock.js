@@ -7,11 +7,9 @@ const app = appServer.createApp()
 const server = app.listen()
 const request = supertest(server)
 
-before(function(done) {
-  const redisHandler = redisModule.getConnection()
-  redisHandler.flushall().then(() => {
-    done()
-  })
+const redisHandler = redisModule.getConnection()
+redisHandler.flushdb().then((result) => {
+  console.log('clear redis data', result)
 })
 
 const voters = {

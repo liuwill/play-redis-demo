@@ -17,6 +17,18 @@ describe('Election And Vote', function () {
       });
   });
 
+  it('list voter', function (done) {
+    request
+      .get('/api/voter/list')
+      .set('Accept', 'application/json')
+      .expect('Content-Type', /json/)
+      .expect(200)
+      .end(function (err, res) {
+        if (err) return done(err)
+        done()
+      });
+  });
+
   it('get voter', function (done) {
     request
       .get('/api/voter/info/18800000001')

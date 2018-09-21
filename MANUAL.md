@@ -35,6 +35,16 @@ curl -X POST \
   http://localhost:3000/api/elector/create \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -d 'mobile=16600000002&password=111111'
+
+curl -X POST \
+  http://localhost:3000/api/elector/create \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -d 'mobile=16600000003&password=111111'
+
+curl -X POST \
+  http://localhost:3000/api/elector/create \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -d 'mobile=16600000004&password=111111'
 ```
 
 ## 4 查看所有竞选人

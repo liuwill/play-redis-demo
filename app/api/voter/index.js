@@ -11,6 +11,26 @@ const chance = require('chance').Chance()
 
 const router = new Router()
 
+router.get('/list', async (ctx) => {
+  const redisHandler = ctx.redis
+
+  const hashKey = storeConstant.VOTE_USER_HASH_KEY
+  let rawVoterMap = await redisHandler.hgetall(hashKey)
+  let voterList = Object.values(rawVoterMap).map(item => {
+    let data = JSON.parse(item)
+    return electionUtils.buildVoteData(data)
+  })
+
+  ctx.body = {
+    status: true,
+    code: 0,
+    data: {
+      list: voterList,
+      total: voterList.length,
+    },
+  }
+})
+
 // 获取单个投票人
 router.get('/info/:mobile', async (ctx) => {
   const redisHandler = ctx.redis
