@@ -48,7 +48,9 @@
             <div class="voter-empty" v-if="!voterList || !voterList.length">还没有创建用户！</div>
             <div class="voter-item" v-for="item in voterList">
               <div class="voter-content">
-                <div class="voter-avatar"><img :src="item.avatar" /></div>
+                <div class="voter-avatar">
+                  <div class="avatar-img" v-bind:style="generateAvatarBackground(item.avatar)"></div>
+                </div>
                 <div class="voter-name">{{ item.name }}</div>
                 <div class="voter-action"><button v-on:click="onOpenCollect(item)">加选票</button></div>
               </div>
@@ -119,9 +121,11 @@
       Vue.component('grid-item', {
         props: ['elector'],
         template: '<div class="grid-box" v-on:click="' + "$emit('open-vote', elector)" + '"><div class="grid-box-content">'
-          + '<div class="avatar"><img :src="elector.avatar"/></div>'
-          + '<div class="name" :title="elector.name">{{ elector.name }}</div>'
-          + '<div class="company" :title="elector.profession">{{ elector.profession }}</div>'
+          + ' <div class="avatar">'
+          + '   <div class="avatar-img" v-bind:style="generateAvatarBackground(elector.avatar)"></div>'
+          +'  </div>'
+          + ' <div class="name" :title="elector.name">{{ elector.name }}</div>'
+          + ' <div class="company" :title="elector.profession">{{ elector.profession }}</div>'
           + '</div></div>'
       })
 

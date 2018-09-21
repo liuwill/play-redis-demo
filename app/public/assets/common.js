@@ -118,3 +118,17 @@ HistoryUtil.prototype.push = function (path, data) {
   this.history.pushState(data, '', '?page=' + path)
   this.emitter.trigger('HISTORY_PUSH_STATE', { path: path, data: data })
 }
+
+function generateAvatarBackground(avatar) {
+  // `this` 指向 vm 实例
+  var TARGET_COLORS = [
+    '009933', '333399', '336699', '339999', '6633CC', '990033', 'FFCC66', '000', '999966'
+  ]
+  var index = Math.floor(Math.random() * TARGET_COLORS.length)
+  var color = TARGET_COLORS[index]
+  var blander = 'linear-gradient(#' + color + ', #' + color + ')'
+  return {
+    backgroundBlendMode: 'lighten',
+    backgroundImage: 'url(' + avatar + '), ' + blander
+  }
+}

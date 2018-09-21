@@ -227,6 +227,15 @@ i.add-icon::after {
   position: relative;
   flex-wrap: wrap;
 }
+.voter-empty {
+  margin: 1em;
+  height: 100px;
+  width: 100%;
+  text-align: center;
+  line-height: 100px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+}
 .voter-item {
   flex: 0 0 50%;
   padding: 2em 1em;
@@ -253,8 +262,10 @@ i.add-icon::after {
   margin-bottom: 3px;
   border-radius: 100%;
 }
-.voter-item .voter-avatar>img {
+.avatar-img {
+  height: 100%;
   width: 100%;
+  background-size: cover;
   border-radius: 100%;
 }
 .voter-item .voter-name {
