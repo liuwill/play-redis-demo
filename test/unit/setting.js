@@ -33,6 +33,20 @@ describe('load json config', function () {
 
     expect(settingConfig).to.be.an('object')
   })
+
+  it('should load redis setting from env', function () {
+    const envConfig = {
+      'REDIS_SERVER': 'test-server',
+      'REDIS_PORT': '6379',
+      'REDIS_SECRET': '123456',
+    }
+    const redisConfig = settingUtils.buildRedisConfig({}, envConfig)
+    expect(redisConfig).to.deep.include({
+      host: envConfig.REDIS_SERVER,
+      port: envConfig.REDIS_PORT,
+      password: envConfig.REDIS_SECRET,
+    })
+  })
 })
 
 describe('cover redis error', function () {

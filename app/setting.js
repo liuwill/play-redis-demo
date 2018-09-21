@@ -21,17 +21,30 @@ const fetchConfigPath = (nodeEnv) => {
   return settingPath
 }
 
+const buildRedisConfig = (redisConfig, envConfig) => {
+  if (envConfig.REDIS_SERVER) {
+    redisConfig = {
+      host: envConfig.REDIS_SERVER,
+      port: envConfig.REDIS_PORT,
+      password: envConfig.REDIS_SECRET,
+    }
+  }
+  return redisConfig
+}
+
 let settingConfig = null
 
 export default {
   fetchConfigPath,
   loadJsonConfig,
+  buildRedisConfig,
   loadSetting: () => {
     let settingPath = fetchConfigPath(process.env.NODE_ENV)
 
     if (!settingConfig) {
       settingConfig = loadJsonConfig(path.join(__dirname, settingPath))
     }
+
     return settingConfig
   }
 }

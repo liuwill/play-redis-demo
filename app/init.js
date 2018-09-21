@@ -6,7 +6,8 @@ export default {
   initModules: (app) => {
     const setting = settingUtils.loadSetting()
 
-    app.context.redis = redisModule.getConnection(setting.redis)
+    const redisConfig = settingUtils.buildRedisConfig(setting.redis, process.env)
+    app.context.redis = redisModule.getConnection(redisConfig)
   },
   installRouters: (app) => {
     app
