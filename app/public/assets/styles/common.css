@@ -258,7 +258,22 @@ i.add-icon::after {
   border-radius: 100%;
 }
 .voter-item .voter-name {
-  margin-top: 0.5em;
+  margin-top: 0.6em;
+}
+.voter-item .voter-action {
+  margin-top: 1em;
+}
+.voter-item .voter-action>button {
+  background: #fff;
+  color: #b9253d;
+  border: 1px solid #b9253d;
+  border-radius: 3px;
+  padding: 0.3em 1em;
+  outline: none;
+}
+.voter-item .voter-action>button:hover {
+  color: #d7a2aa;
+  border: 1px solid #d7a2aa;
 }
 
 /* 弹窗模块 */

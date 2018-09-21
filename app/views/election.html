@@ -50,7 +50,7 @@
               <div class="voter-content">
                 <div class="voter-avatar"><img :src="item.avatar" /></div>
                 <div class="voter-name">{{ item.name }}</div>
-                <div class="voter-action"></div>
+                <div class="voter-action"><button v-on:click="onOpenCollect(item)">加选票</button></div>
               </div>
             </div>
           </div>
@@ -62,7 +62,6 @@
       <div class="menu-bar-item" v-bind:class="{active: page == 'election'}" v-on:click="onChangeElection">竞选人</div>
       <div class="menu-bar-item" v-bind:class="{active: page == 'ranking'}" v-on:click="onChangeRanking">排行榜</div>
       <div class="menu-bar-item" v-bind:class="{active: page == 'voter'}" v-on:click="onChangeVoter">投票人</div>
-      <div class="menu-bar-item" v-on:click="onOpenCollect">拉票</div>
     </div>
 
     <transition name="slide-fade">
@@ -70,7 +69,7 @@
         <div class="pop-mask" v-on:click="handleClose"></div>
         <div class="pop-window">
           <tab-panel v-if="visibleMode === 'create'"></tab-panel>
-          <collect-panel v-if="visibleMode === 'collect'"></collect-panel>
+          <collect-panel v-if="visibleMode === 'collect'" v-bind:voter="currentVoter" v-bind:mobile="currentVoter.mobile"></collect-panel>
           <vote-panel v-if="visibleMode === 'vote'" v-bind:elector="currentElector" v-on:submit-vote="onSubmitVote">
           </vote-panel>
         </div>
@@ -101,7 +100,7 @@
         visible: false,
         visibleMode: 'create',
         currentElector: {},
-        currentUser: {},
+        currentVoter: {},
         electorList: [],
         rankingList: [],
         voterList: []
@@ -161,16 +160,16 @@
       })
 
       Vue.component('collect-panel', {
+        props: ['voter', 'mobile'],
         data: function () {
           return {
-            voter: {},
             mobileInput: '',
             passwordInput: '',
           }
         },
         methods: {
           submitCollect: function () {
-            var mobile = this.mobileInput
+            var mobile = this.mobile
             var password = this.passwordInput
             if (!mobile || !password) {
               alert('请填写完整信息之后再尝试')
@@ -187,6 +186,7 @@
                 var responseData = response.data
                 that.voter = responseData.data
                 alert('成功获得选票【' + responseData.data.collect_point + '】')
+                root.loadVoters()
               })
               .catch(function (error) {
                 if (error.response) {
@@ -208,7 +208,7 @@
           + '      </div>'
           + '      <div class="form-container">'
           + '        <div class="form-item">'
-          + '          <input v-model="mobileInput" class="form-input" placeholder="投票人手机号"/>'
+          + '          <input v-model="mobile" class="form-input" placeholder="投票人手机号" readonly/>'
           + '        </div>'
           + '        <div class="form-item">'
           + '          <input v-model="passwordInput" class="form-input" type="password" placeholder="投票人密码"/>'
@@ -333,9 +333,10 @@
             this.visible = true
             this.visibleMode = 'create'
           },
-          onOpenCollect: function (event) {
+          onOpenCollect: function (voter) {
             this.visible = true
             this.visibleMode = 'collect'
+            this.currentVoter = voter
           },
           onHandleDoVote: function (elector) {
             this.visible = true
