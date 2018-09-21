@@ -58,3 +58,26 @@ Emitter.prototype.reset = function () {
     this.handlers[key] = []
   }
 }
+
+function parseParams (raw) {
+  var target = {}
+  if (!raw) {
+    return target
+  }
+  var param = raw.substr(1)
+  var piece = param.split('&')
+  for (var i in piece) {
+    var item = piece[i]
+    var meta = item.split('=')
+    if (meta[0]) {
+      target[meta[0]] = meta[1] || ''
+    }
+  }
+  return target
+}
+
+function HistoryUtil(search, hash, history) {
+  this.hash = parseParams(hash)
+  this.search = parseParams(search)
+  this.history = history
+}

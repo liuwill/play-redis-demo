@@ -17,6 +17,19 @@ describe('Election And Vote', function () {
       });
   });
 
+  it('collect voter', function (done) {
+    request
+      .post('/api/voter/collect')
+      .send(mockServer.voters['18800000001'])
+      .set('Accept', 'application/json')
+      .expect('Content-Type', /json/)
+      .expect(200)
+      .end(function (err, res) {
+        if (err) return done(err)
+        done()
+      });
+  });
+
   it('list voter', function (done) {
     request
       .get('/api/voter/list')
@@ -32,19 +45,6 @@ describe('Election And Vote', function () {
   it('get voter', function (done) {
     request
       .get('/api/voter/info/18800000001')
-      .set('Accept', 'application/json')
-      .expect('Content-Type', /json/)
-      .expect(200)
-      .end(function (err, res) {
-        if (err) return done(err)
-        done()
-      });
-  });
-
-  it('collect voter', function (done) {
-    request
-      .post('/api/voter/collect')
-      .send(mockServer.voters['18800000001'])
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
       .expect(200)

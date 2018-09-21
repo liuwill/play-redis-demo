@@ -75,6 +75,8 @@
     }
 
     var globalEmitter = new Emitter()
+    var historyUtil = new HistoryUtil(window.location.search, window.location.hash, window.history)
+    console.log(historyUtil)
 
     function VoterApp(root) {
       this.root = root

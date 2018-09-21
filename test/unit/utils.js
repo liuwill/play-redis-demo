@@ -36,5 +36,10 @@ describe('utils test', function () {
       const notInRank = electionUtils.parseRank(null)
       expect(notInRank).to.equal(0)
     })
+
+    it('format wrong number', function () {
+      const num = electionUtils.formatNumber(null)
+      expect(num).to.equal(0)
+    })
   })
 })

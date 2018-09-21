@@ -52,5 +52,12 @@ export default {
     }
 
     return myRank || 0
-  }
+  },
+  formatNumber: (num) => {
+    if (!isNaN(`${num}`)) {
+      return Number(num)
+    }
+
+    return 0
+  },
 }

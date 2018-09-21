@@ -12,8 +12,29 @@ const chance = require('chance').Chance()
 const router = new Router()
 
 router.get('/list', async (ctx) => {
+  const redisHandler = ctx.redis
+
   let hashKey = storeConstant.VOTE_USER_HASH_KEY
   let voterList = await apiService.listAll(hashKey, electionUtils.buildVoteData)
+
+  let mobilePos = []
+  let voterActions = voterList.map((item) => {
+    mobilePos.push(item.mobile)
+    let cachedKey = electionUtils.generateVoterPointsKey(item.mobile)
+    return ['get', cachedKey]
+  })
+
+  let actionResults = await redisHandler.pipeline(voterActions).exec()
+  let pointMap = actionResults.reduce((result, item, index) => {
+    let mobile = mobilePos[index]
+    result[`${mobile}`] = electionUtils.formatNumber(item[1])
+    return result
+  }, {})
+
+  voterList.forEach(item => {
+    let mobile = item.mobile
+    item.point = pointMap[`${mobile}`]
+  })
 
   ctx.body = {
     status: true,
@@ -41,7 +62,7 @@ router.get('/info/:mobile', async (ctx) => {
   let cachedKey = electionUtils.generateVoterPointsKey(mobile)
 
   let point = await redisHandler.get(cachedKey)
-  voterData.point = point || 0
+  voterData.point = electionUtils.formatNumber(point)
 
   ctx.body = {
     status: true,
