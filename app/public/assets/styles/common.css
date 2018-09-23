@@ -53,7 +53,7 @@ body {
 }
 
 .menu-bar {
-  height: 5em;
+  height: 4.8em;
   width: 100%;
   position: absolute;
   bottom: 0;
@@ -135,7 +135,8 @@ i.add-icon {
   border: 3px solid #211922;
   width: 5em;
   height: 5em;
-  line-height: 5em;
+  /* line-height: 5em; */
+  line-height: 4.5em;
 
   border-radius: 100%;
 }
@@ -344,7 +345,9 @@ i.add-icon::after {
 .pop-layer .pop-window {
   position: absolute;
   width: 100%;
-  height: 50%;
+  /* min-height: 50%; */
+  max-height: 80%;
+  overflow: auto;
   bottom: 0;
   background: #fff;
 }
