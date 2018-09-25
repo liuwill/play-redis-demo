@@ -32,12 +32,13 @@ docker-compose up -d
 # 测试
 yarn run check
 
-执行单元测试的时候需要注意，单元测试会先进行删除数据操作，清空`redis`中`db=1`数据库的所有数据。确保测试之前该库中没有重要数据。这个配置是通过设置`NODE_ENV=unit`，然后加载[config/setting.unit.json](config/setting.unit.json)文件中的配置实现的。正常的服务使用`db=0`的库。
-
 # 启动服务
 yarn start
 
 ```
+
+执行单元测试的时候需要注意，单元测试会先进行删除数据操作，清空`redis`中`db=1`数据库的所有数据。确保测试之前该库中没有重要数据。这个配置是通过设置`NODE_ENV=unit`，然后加载[config/setting.unit.json](config/setting.unit.json)文件中的配置实现的。正常的服务使用`db=0`的库。
+
 
 ## 查看服务
 
