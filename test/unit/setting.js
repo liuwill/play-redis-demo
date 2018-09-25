@@ -5,6 +5,10 @@ import redisModule from '../../app/module/redis'
 
 const { expect, assert } = chai
 
+const generateRandom = () => {
+  return Math.random().toString(36).substr(2)
+}
+
 describe('load json config', function () {
   it('should fetch default config path', function () {
     const filePath = settingUtils.fetchConfigPath()
@@ -13,7 +17,7 @@ describe('load json config', function () {
   })
 
   it('should load empty if file not exists', function () {
-    const filename = Math.random().toString(36).substr(2)
+    const filename = generateRandom()
     const fileContent = settingUtils.loadJsonConfig(filename)
 
     expect(fileContent).to.be.an('object')

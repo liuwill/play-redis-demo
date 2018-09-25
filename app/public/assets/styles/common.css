@@ -14,27 +14,6 @@ body {
 .main {
   height: 100%;
 }
-@media screen and (min-width: 425px) {
-  .main {
-    width: 425px;
-    height: 100%;
-    position: relative;
-    border: 1px solid #ccc;
-    margin: auto;
-  }
-}
-@media screen and (min-width: 640px) {
-  .float-tip {
-    display: none;
-    position: absolute;
-
-    width: 100px;
-    height: 120px;
-    border: 1px solid;
-    top: 50%;
-    right: 5%;
-  }
-}
 
 .status-bar {
   position: absolute;
@@ -345,7 +324,7 @@ i.add-icon::after {
 .pop-layer .pop-window {
   position: absolute;
   width: 100%;
-  /* min-height: 50%; */
+  min-height: 50%;
   max-height: 80%;
   overflow: auto;
   bottom: 0;
@@ -476,4 +455,30 @@ i.add-icon::after {
 /* .slide-fade-leave-active for below version 2.1.8 */ {
   transform: translateX(10px);
   opacity: 0;
+}
+
+/** 响应式样式 */
+@media screen and (min-width: 425px) {
+  .main {
+    width: 425px;
+    height: 100%;
+    position: relative;
+    border: 1px solid #ccc;
+    margin: auto;
+  }
+  .pop-layer .pop-window {
+    min-width: auto;
+  }
+}
+@media screen and (min-width: 640px) {
+  .float-tip {
+    display: none;
+    position: absolute;
+
+    width: 100px;
+    height: 120px;
+    border: 1px solid;
+    top: 50%;
+    right: 5%;
+  }
 }
