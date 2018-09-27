@@ -12,8 +12,10 @@ services:
       - ./:/usr/app/play-redis-demo
     command: sh /usr/app/play-redis-demo/scripts/runner.sh
     ports:
-      - "3000:3000"
+      - "13000:3000"
     environment:
       - NODE_ENV=development
+      - REDIS_SERVER=some-redis
+      - REDIS_PORT=6379
     links:
       - some-redis
