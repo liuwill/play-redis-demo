@@ -29,8 +29,11 @@ docker-compose up -d
   }
 }
 
-# 测试
+# 格式检查
 yarn run check
+
+# 测试
+yarn run coverage
 
 # 启动服务
 yarn start

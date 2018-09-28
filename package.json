@@ -27,12 +27,15 @@
     "eslint": "^5.6.0",
     "mocha": "^5.2.0",
     "nyc": "^13.0.1",
+    "stylelint": "^9.6.0",
+    "stylelint-config-standard": "^18.2.0",
     "supertest": "^3.3.0"
   },
   "scripts": {
     "start": "node index",
-    "check": "yarn lint && yarn run test",
+    "check": "yarn lint && yarn run stylelint",
     "lint": "eslint ./",
+    "stylelint": "stylelint ./app/**/*.css ./app/**/*.html",
     "test": "NODE_ENV=unit mocha --opts test/mocha.opts",
     "coverage": "export NODE_ENV=unit && nyc mocha --opts test/mocha.opts",
     "report": "export NODE_ENV=unit && nyc --reporter=html --reporter=text mocha --opts test/mocha.opts",
